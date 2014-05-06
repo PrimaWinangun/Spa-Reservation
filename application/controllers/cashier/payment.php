@@ -220,9 +220,6 @@ class Payment extends CI_Controller {
 				'rb_paid_usd' => $this->input->post('grand_usd'),
 				'rb_paid_idr_2' => $this->input->post('grand_idr_2'),
 				'rb_paid_usd_2' => $this->input->post('grand_usd_2'),
-				'rb_cc_id' => $this->input->post('cc_id'),
-				'rb_cc_name' => $this->input->post('cc_name'),
-				'rb_cc_bank' => $this->input->post('cc_bank'),
 				'rb_update_by' => $user['username'],
 				'rb_transaction_by' => $user['username'],
 		);

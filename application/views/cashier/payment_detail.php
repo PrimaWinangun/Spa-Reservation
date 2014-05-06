@@ -62,7 +62,15 @@
 </div>
 
 <!-- Calculating Javascript -->
-<?php $this->load->view('cashier/script/calculate');?>
+<?php $this->load->view('cashier/script/calculate');
+
+$tx_idr = 0;
+$tx_usd = 0;
+$serv_idr = 0; 
+$serv_usd = 0;
+$sub_idr = 0; 
+$sub_usd = 0; 
+?>
 
 
 <div class="block span5">
@@ -97,7 +105,7 @@
 				<td><label>Payment Type </label></td><td>:</td>
 				<td align="right">
                     <div class="formRight">
-						<select id="pay_type" name="pay_type" onchange="javascript:showCCDetail(this.value)">  <!--Call run() function-->
+						<select id="pay_type" name="pay_type">  <!--Call run() function-->
 							 <option value="Cash">Cash</option>
 							 <option value="Credit_Card">Credit Card</option>
 							 <option value="Debit_Card">Debit Card</option>
@@ -118,41 +126,6 @@
 						</select>
 				</td>
 			</tr>
-			<tr class="cc_detail">
-				<td><label>Card ID</label></td><td>:</td>
-				<td align="right">
-                        <div class="formRight">
-						<?php 
-						$ccid = array(
-							'name' => 'cc_id',
-							'id'   => 'cc_id',
-						);
-						echo form_input($ccid);?></div>
-				</td>
-			<tr>
-			<tr class="cc_detail">
-				<td><label>Card Name</label></td><td>:</td>
-				<td align="right">
-                        <div class="formRight">
-						<?php 
-						$ccn = array(
-							'name' => 'cc_name',
-							'id'   => 'cc_name',
-						);
-						echo form_input($ccn);?></div>
-				</td>	
-			<tr>
-			<tr class="cc_detail">
-				<td><label>Bank</label></td><td>:</td>
-				<td align="right">
-                        <div class="formRight">
-						<?php 
-						$ccn = array(
-							'name' => 'cc_bank',
-							'id'   => 'cc_bank',
-						);
-						echo form_input($ccn);?></div>
-				</td>	
 			<tr>
 				<td><label>Discount </label></td><td>:</td>
 				<td align="right">
@@ -194,6 +167,7 @@
                 </td>
 			</tr>
 			<tr>
+			<?php $tx_idr = $total_bayar * 10 / 100; $tx_usd = $total_bayar_dollar * 10 / 100; ?>
 				<td><label>Tax </label><td>:</td>
 				<td align="right">
                         <div class="formRight">
@@ -211,8 +185,8 @@
 							'name' => 'tax_idr',
 							'id'   => 'tax_idr',
 							'style'=> 'width:48%',
-							'value'=> $total_bayar * 10 / 100,
-							'onchange' => 'javascript:hitungtotal(this.value)'
+							'value'=> $tx_idr,
+							'readonly' => 'readonly'
 						);
 						echo form_input($tax_idr);?>
 						</div>
@@ -227,10 +201,55 @@
 							'name' => 'tax_usd',
 							'id'   => 'tax_usd',
 							'style'=> 'width:48%',
-							'value'=> $total_bayar_dollar * 10 / 100,
-							'onchange' => 'javascript:hitungtotal(this.value)'
+							'value'=> number_format($tx_usd, 2, '.',''),
+							'readonly' => 'readonly'
 						);
 						echo form_input($tax_usd);?>
+						</div>
+                </td>
+			</tr>
+			<?php 
+				$serv_idr = $total_bayar + $tx_idr; $serv_usd = $total_bayar_dollar + $tx_usd;
+				$sub_idr = $serv_idr * 10 / 100; $sub_usd = $serv_usd * 10 / 100; 
+			?>
+			<tr>
+				<td><label>Service </label><td>:</td>
+				<td align="right">
+                        <div class="formRight">
+						<?php 
+						$srv = array(
+							'name' => 'serv',
+							'id'   => 'serv',
+							'style'=> 'width:10%',
+							'value'=> 10,
+							'onchange' => 'javascript:hitungtotal(this.value)'
+						);
+						echo form_input($srv); ?>&nbsp IDR
+					<?php
+						$srv_idr = array(
+							'name' => 'serv_idr',
+							'id'   => 'serv_idr',
+							'style'=> 'width:48%',
+							'value'=> $sub_idr,
+							'readonly' => 'readonly'
+						);
+						echo form_input($srv_idr);?>
+						</div>
+                </td>
+			</tr>
+			<tr>
+				<td></td><td></td>
+				<td align="right">
+                        <div class="formRight">USD
+					<?php
+						$srv_usd = array(
+							'name' => 'serv_usd',
+							'id'   => 'serv_usd',
+							'style'=> 'width:48%',
+							'value'=> number_format($sub_usd, 2, '.',''),
+							'readonly' => 'readonly'
+						);
+						echo form_input($srv_usd);?>
 						</div>
                 </td>
 			</tr>
@@ -243,7 +262,7 @@
 							'name' => 'grand_idr',
 							'id'   => 'grand_idr',
 							'style'=> 'width:65%',
-							'value'=> $total_bayar + ($total_bayar * 10 / 100),
+							'value'=> $total_bayar + $tx_idr + $sub_idr,
 						);
 						echo form_input($jk);?></td>
 			</tr>
@@ -254,7 +273,7 @@
 							'name' => 'grand_usd',
 							'id'   => 'grand_usd',
 							'style'=> 'width:65%',
-							'value'=> $total_bayar_dollar + ($total_bayar_dollar * 10 / 100),
+							'value'=> number_format(($total_bayar_dollar + $tx_usd + $sub_usd), 2, '.',''),
 						);
 						echo form_input($jk);?>
 						</div>

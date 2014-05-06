@@ -42,15 +42,6 @@ table.gridtable td {
 	<tr>
 		<td>Payment</td><td>:</td><td colspan="2"><?php echo $pay_code; ?></td>
 	</tr>
-	<?php if ($data_pay['rb_cc_id'] != NULL) { ?>
-	 <tr>
-		<td>Card ID</td><td>:</td><td colspan="2"><?php echo $data_pay['rb_cc_id']; ?></td>
-	</tr> 
-	<tr>
-		<td>Card Name</td><td>:</td><td colspan="2"><?php echo $data_pay['rb_cc_name']; ?></td>
-	</tr>
-	<?php } ?>
-</table>
 <table class="gridtable">
 	<tr>
 		<td colspan="5"><hr/></td>
