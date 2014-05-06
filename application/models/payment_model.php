@@ -66,6 +66,14 @@ class Payment_model extends CI_Model {
 		return $query->result();
 	 }
 	 
+	 public function get_payment_type()
+	 {
+		$this->db->where('pay_hide_status', 'no');
+		$query = $this->db->get('tbb_payment_type');
+		
+		return $query->result();
+	 }
+	 
 	 public function get_payment_list_search_date($search, $num, $offset)
 	 {
 		$this->db->where('rb_paid_date', $search);

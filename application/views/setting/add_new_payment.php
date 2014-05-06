@@ -1,5 +1,5 @@
-<div class="block span4">
-<a href="#page-stats" class="block-heading" data-toggle="collapse"> New Product</a>
+<div class="block span3">
+<a href="#page-stats" class="block-heading" data-toggle="collapse"> New Payment Type</a>
 <div id="page-stats1" class="block-body collapse in">
 	<div id="myTabContent" class="tab-content">
 			<?php 
@@ -44,10 +44,7 @@
         </div>
 </div>
 </div>
-<div class="block span8">
-<a href="#page-stats" class="block-heading" data-toggle="collapse">Payment List</a>
-<div id="page-stats2" class="block-body collapse in">
-	<div id="myTabContent" class="tab-content">
+<div class="block span9">
 	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
         <tfoot>
 			<tr><td colspan=9></td></tr>
@@ -56,7 +53,8 @@
 			<tr>
 				<th>No</th>
 				<th>Payment</th>
-				<th>Discount</th>
+				<th>Discount (%)</th>
+				<th>Hide</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -71,12 +69,18 @@
 			<tr>
 				<td align="center"><?php echo $num++ ?></td>
 				<td><?php echo $row_rm['pay_payment_type'] ?></td>
-				<td><?php echo $row_rm['pay_discount'] ?></td>
+				<td align="right"><?php echo $row_rm['pay_discount'] ?></td>
+				<td align="center"><?php echo $row_rm['pay_hide_status'] ?></td>
 				
-				<td><center><?php echo anchor('setting/admin/void_payment_type/'.$row_rm['id_pay_type']/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'delete'); ?></td>
+				<td><center><?php 
+					if ($row_rm['pay_hide_status'] == 'no'){
+						echo anchor('setting/admin/void_payment_type/'.$row_rm['id_pay_type'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide Payment List', 'title'=>'Hide Payment List'))); 
+						echo '&nbsp'.anchor('setting/admin/edit_payment_type/'.$row_rm['id_pay_type'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit Payment List', 'title'=>'Edit Payment List')));
+					} else {
+						echo anchor('setting/admin/show_payment_type/'.$row_rm['id_pay_type'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Payment List', 'title'=>'Show Payment List')));
+					}
+				?></td>
             </tr><?php } } ?>
         </tbody>
     </table>
-</div>
-</div>
 </div>

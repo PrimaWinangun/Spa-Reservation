@@ -1,5 +1,5 @@
-<div class="block span4">
-<a href="#page-stats" class="block-heading" data-toggle="collapse"> Reservation Code <?php echo $this->uri->segment(4);?></a>
+<div class="block span3">
+<a href="#page-stats" class="block-heading" data-toggle="collapse"> New Room</a>
 <div id="page-stats1" class="block-body collapse in">
 	<div id="myTabContent" class="tab-content">
 			<?php 
@@ -29,7 +29,6 @@
 						$jk = array(
 							'name' => 'room',
 							'id'   => 'room',
-							'style'=> 'width:20%',
 						);
 						echo form_input($jk);?>
 						</div>
@@ -47,13 +46,10 @@
         </div>
 </div>
 </div>
-<div class="block span8">
-<a href="#page-stats" class="block-heading" data-toggle="collapse">Reservation Code <?php echo $this->uri->segment(4);?></a>
-<div id="page-stats2" class="block-body collapse in">
-	<div id="myTabContent" class="tab-content">
+<div class="block span9">
 	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
         <tfoot>
-			<tr><td colspan=9></td></tr>
+			<tr><td colspan=6><div class="pagination"><?php echo $this->pagination->create_links();?></div></td></tr>
 		</tfoot>
 		<thead>
 			<tr>
@@ -61,6 +57,7 @@
 				<th>Category</th>
 				<th>Room</th>
 				<th>Status</th>
+				<th>Hide Status</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -68,7 +65,8 @@
 		<?php 
 		if ($room != NULL)
 		{
-		$num = 1;
+		if ($this->uri->segment(4) == NULL)
+		{ $num = 1; } else { $num = $this->uri->segment(4, 1) + 1; }
 		foreach ($room as $row_rm)
 		{ 
 			?>
@@ -77,11 +75,18 @@
 				<td><center><?php echo $row_rm['room_category']?></td>
 				<td><center><?php echo $row_rm['room_name']?></td>
 				<td><center><?php echo $row_rm['room_status']?></td>
+				<td><center><?php echo $row_rm['room_hide_status']?></td>
 				
-				<td><center><?php echo anchor('setting/admin/void_room/'.$row_rm['id']/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'delete'); ?></td>
+				<td><center><?php 
+					if ($row_rm['room_hide_status'] == 'no'){
+						echo anchor('setting/admin/void_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide room', 'title'=>'Hide room'))); 
+						echo '&nbsp'.anchor('setting/admin/edit_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit room', 'title'=>'Edit room')));
+					} else {
+						echo anchor('setting/admin/show_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show room', 'title'=>'Show room')));
+					}
+				?></td>
             </tr><?php } } ?>
         </tbody>
     </table>
-</div>
 </div>
 </div>

@@ -5,7 +5,8 @@
 			<?php 
 			
 			$attributes = array('class'=>'form','id'=>'wizard3');
-			echo form_open('setting/admin/insert_product', $attributes);?>
+			echo form_open('setting/admin/update_product', $attributes);
+			echo form_hidden('id', $product->id_prod);?>
                 <fieldset class="step" id="w2first">
                     <h1></h1>
 					<div class="formRow">
@@ -18,7 +19,7 @@
 						{
 							$rc[$rc_list['cp_code']] = ($rc_list['cp_name']);
 						} endforeach; 
-						echo form_dropdown('prod_cat',$rc,'');
+						echo form_dropdown('prod_cat',$rc,$product->prod_kategori);
 						?>
 						</div>
                         <div class="clear"></div>
@@ -30,6 +31,7 @@
 						$pc = array(
 							'name' => 'prod_code',
 							'id'   => 'prod_code',
+							'value'=> $product->prod_code
 						);
 						echo form_input($pc);?>
 						</div>
@@ -42,6 +44,7 @@
 						$pn = array(
 							'name' => 'prod_name',
 							'id'   => 'prod_name',
+							'value'=> $product->prod_name
 						);
 						echo form_input($pn);?>
 						</div>
@@ -54,14 +57,16 @@
 						$pri = array(
 							'name' => 'prod_rate',
 							'id'   => 'prod_rate',
-							'placeholder' => 'Rupiah (IDR)'
+							'placeholder' => 'Rupiah (IDR)',
+							'value'=> $product->prod_rate
 						);
 						echo form_input($pri);?>
 						<?php 
 						$pru = array(
 							'name' => 'prod_rate_usd',
 							'id'   => 'prod_rate_usd',
-							'placeholder' => 'Dollar (USD)'
+							'placeholder' => 'Dollar (USD)',
+							'value'=> $product->prod_rate_dollar
 						);
 						echo form_input($pru);?>
 						</div>
@@ -78,57 +83,5 @@
 			<div class="data" id="w2"></div>
         </div>
 </div>
-</div>
-<div class="block span9">
-	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
-        <tfoot>
-			<tr><td colspan=8><div class="pagination"><?php echo $this->pagination->create_links();?></div></td></tr>
-		</tfoot>
-		<thead>
-			<tr>
-				<th rowspan="2">No</th>
-				<th colspan="3">Product</th>
-				<th colspan="2">Rate</th>
-				<th rowspan="2">Hide Status</th>
-				<th rowspan="2">Action</th>
-			</tr>
-			<tr>
-				<th>Category</th>
-				<th>Code</th>
-				<th>Name</th>
-				<th>IDR</th>
-				<th>USD</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php 
-		if ($product != NULL)
-		{
-		$num = 1;
-		foreach ($product as $row_rm)
-		{ 
-			?>
-			<tr>
-				<td><?php echo $num++ ?></td>
-				<td><?php echo $row_rm['prod_kategori'] ?></td>
-				<td><?php echo $row_rm['prod_code'] ?></td>
-				<td><?php echo $row_rm['prod_name'] ?></td>
-				<td align="right"><?php echo $row_rm['prod_rate'] ?></td>
-				<td align="right"><?php echo $row_rm['prod_rate_dollar'] ?></td>
-				<td align="center"><?php echo $row_rm['prod_hide_status'] ?></td>
-				
-				<td><center>
-				<?php 
-					if ($row_rm['prod_hide_status'] == 'no'){
-						echo anchor('setting/admin/void_product/'.$row_rm['id_prod'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide Product', 'title'=>'Hide Product'))); 
-						echo '&nbsp'.anchor('setting/admin/edit_product/'.$row_rm['id_prod'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit Product', 'title'=>'Edit Product')));
-					} else {
-						echo anchor('setting/admin/show_product/'.$row_rm['id_prod'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Product', 'title'=>'Show Product')));
-					}
-				?>
-				</td>
-            </tr><?php } } ?>
-        </tbody>
-    </table>
 </div>
 </div>

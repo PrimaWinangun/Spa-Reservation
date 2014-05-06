@@ -57,6 +57,7 @@
 				<th>No</th>
 				<th>Category Code</th>
 				<th>Cateogry Name</th>
+				<th>Hide Status</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -72,8 +73,16 @@
 				<td><?php echo $num++ ?></td>
 				<td><?php echo $row_rm['cp_code'] ?></td>
 				<td><?php echo $row_rm['cp_name'] ?></td>
+				<td><?php echo $row_rm['cp_hide_status'] ?></td>
 				
-				<td><center><?php echo anchor('setting/admin/void_product_cat/'.$row_rm['id_cat_product']/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'delete'); ?></td>
+				<td><center><?php 
+					if ($row_rm['cp_hide_status'] == 'no'){
+						echo anchor('setting/admin/void_product_cat/'.$row_rm['id_cat_product'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide Product Category', 'title'=>'Hide Product Category'))); 
+						echo '&nbsp'.anchor('setting/admin/edit_product_cat/'.$row_rm['id_cat_product'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit Product Category', 'title'=>'Edit Product Category')));
+					} else {
+						echo anchor('setting/admin/show_product_cat/'.$row_rm['id_cat_product'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Product Category', 'title'=>'Show Product Category')));
+					}
+				?></td>
             </tr><?php } } ?>
         </tbody>
     </table>

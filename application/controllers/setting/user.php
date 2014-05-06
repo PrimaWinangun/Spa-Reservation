@@ -75,6 +75,88 @@ class User extends CI_Controller {
 		$this->load->view('template/footer');
 	}
 	
+	public function update()
+	{
+		# Load Model
+		$this->load->model('user_model');
+		
+		# Log Data
+		$user = $this->session->userdata('log_data');
+		
+		# Authentication Limit
+		if (!$this->url_app->auth_limit($user, 'setting', 1))
+		{
+			redirect('notice/not_authorized');
+		}
+		
+		# Page Data
+		$page['page_title'] = $this->session->userdata('title');
+		$page['modul'] = 'setting';
+		$page['sidebar_list_user'] = 'on';
+		
+		# Form Data
+		$data['auth'] = $user['authority'];
+		$data['datauser'] = $this->user_model->get_user_detail($this->uri->segment(4));
+		
+		# Application Log
+		$this->app_log->record($user['username'], $this->uri->uri_string());
+		
+		$this->load->view('template/header', $page);
+		$this->load->view('template/sidebar');
+		$this->load->view('template/breadcumb');
+		$this->load->view('user/update', $data);
+		$this->load->view('template/footer');
+	}
+	
+	public function update_user()
+	{
+		# Load Model
+		$this->load->model('user_model');
+		$this->load->library('encrypt');
+		
+		# Log Data
+		$user = $this->session->userdata('log_data');
+		
+		# Authentication Limit
+		if (!$this->url_app->auth_limit($user, 'setting', 1))
+		{
+			redirect('notice/not_authorized');
+		}
+		
+		$id_user = $this->input->post('id_user');
+		
+		if ($this->input->post('password') == NULL)
+		{
+			$data = array(
+				'ur_username' => $this->input->post('username'),
+				'ur_nama'	  => $this->input->post('nama'),
+				'ur_email'	  => $this->input->post('email'),
+				'ur_level'	  => $this->encrypt->encode($this->input->post('level'), $this->config->item('encryption_key')),
+				'ur_telpon'	  => $this->input->post('telp'),
+				'ur_logon'	  => $this->encrypt->encode($this->input->post('auth'), $this->config->item('encryption_key')),
+				'ur_position' => $this->encrypt->encode($this->input->post('position'), $this->config->item('encryption_key')),
+			);
+		} else {
+			$data = array(
+				'ur_username' => $this->input->post('username'),
+				'ur_password' => $this->encrypt->sha1($this->input->post('password'), $this->config->item('encryption_key')),
+				'ur_nama'	  => $this->input->post('nama'),
+				'ur_email'	  => $this->input->post('email'),
+				'ur_level'	  => $this->encrypt->encode($this->input->post('level'), $this->config->item('encryption_key')),
+				'ur_telpon'	  => $this->input->post('telp'),
+				'ur_logon'	  => $this->encrypt->encode($this->input->post('auth'), $this->config->item('encryption_key')),
+				'ur_position' => $this->encrypt->encode($this->input->post('position'), $this->config->item('encryption_key')),
+			);
+		}
+		
+		$this->login_case->update_user($id_user, $data);
+			
+		# Application Log
+		$this->app_log->record($user['username'], $this->uri->uri_string());
+		
+		# Redirect
+		redirect('setting/user/register');
+	}
 	
 	public function save_user()
 	{

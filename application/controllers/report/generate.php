@@ -115,7 +115,12 @@ class Generate extends CI_Controller {
 		$this->load->view('template/header', $page);
 		$this->load->view('template/sidebar');
 		$this->load->view('template/breadcumb');
-		$this->load->view('report/payment_report_generated', $data);
+		if ($this->input->post('pay_type') == 'Hutang')
+		{
+			$this->load->view('report/hutang_report_generated', $data);
+		} else {
+			$this->load->view('report/payment_report_generated', $data);
+		}
 		$this->load->view('template/footer');
 	}
 	
@@ -148,6 +153,38 @@ class Generate extends CI_Controller {
 		$filename = 'Payment-Report-'.date('dM', strtotime($data['start'])).'-'.date('dMY', strtotime($data['end'])).'-'.$data['payment'].'-'.$data['user'];
 		$data['filename'] = $filename . '.pdf';
 		$html = $this->load->view('report/print/payment',$data, true); 
+		pdf_create($html, $filename, $stream, $papersize, $orientation, '');
+	}
+	
+	public function hutang_pdf()
+	{
+		# Log Data
+		$user = $this->session->userdata('log_data');
+		
+		# Load Model connect to database
+		$this->load->model('report_model');
+		$this->load->library('pdf');
+		
+		# Get data form
+		$data['payment'] = 'Hutang';
+		$data['user'] = $this->uri->segment(4);
+		$data['start'] = date('Y-m-d', strtotime($this->uri->segment(5)));
+		$data['end'] = date('Y-m-d', strtotime($this->uri->segment(6)));
+		$data['pay_list'] = $this->report_model->get_generate_payment_report($data['start'], $data['end'], $data['payment'], $data['user']);
+		
+		# Application Log
+		$this->app_log->record($user['username'], $this->uri->uri_string());
+		
+		# Load Helper PDF
+		$this->load->helper('sigap_pdf');
+		
+		# PDF Maker
+		$stream = TRUE; 
+		$papersize = 'A4'; 
+		$orientation = 'landscape';
+		$filename = 'Hutang-Report-'.date('dM', strtotime($data['start'])).'-'.date('dMY', strtotime($data['end'])).'-'.$data['user'];
+		$data['filename'] = $filename . '.pdf';
+		$html = $this->load->view('report/print/hutang',$data, true); 
 		pdf_create($html, $filename, $stream, $papersize, $orientation, '');
 	}
 	

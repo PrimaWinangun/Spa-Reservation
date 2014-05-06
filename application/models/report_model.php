@@ -42,10 +42,12 @@ class Report_model extends CI_Model {
 			$search_user = "AND `rb_transaction_by` = '$user'";
 		}
 		$query = "
-					SELECT * FROM `tbb_reservation_bill`
+					SELECT * FROM `tbb_reservation_bill` AS `rb`
+					LEFT JOIN `tbb_reservasi` AS `rsv` ON `rb`.`rb_res_code` = `rsv`.`res_code`
 					$search
 					$search_user
 					AND `rb_isvoid` = 'no'
+					AND `res_status` = 'paid'
 					AND `rb_paid_date` >= '$start'
 					AND `rb_paid_date` <= '$end'
 					ORDER BY `id_res_bill` DESC
@@ -98,7 +100,7 @@ class Report_model extends CI_Model {
 		}
 		
 		$query = "
-				SELECT `prod_name`, `rpd_product`, `res_date`, `rpd_res_id`, COUNT(`rpd_product`) AS `times`, SUM(`rpd_quantity`) AS `sum` FROM `tbb_reservasi_pax_detail` AS `rpd`
+				SELECT `prod_code`,`prod_name`, `rpd_product`, `res_date`, `rpd_res_id`, COUNT(`rpd_product`) AS `times`, SUM(`rpd_quantity`) AS `sum` FROM `tbb_reservasi_pax_detail` AS `rpd`
 				LEFT JOIN `tbb_reservasi` AS `rsv` ON `rpd`.`rpd_res_id` = `rsv`.`res_code`
 				LEFT JOIN `tbb_product` AS `prod` ON `rpd`.`rpd_product` = `prod`.`prod_code`
 				$search

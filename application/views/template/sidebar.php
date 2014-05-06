@@ -30,18 +30,22 @@
 		<?php if(! isset($modul)){$modul='';}?>
 		
 		<!-- Reservation Sidebar -->
-		<?php if ($session['position'] == 'reservation' OR $session['authority'] > 1) {?>
+		<?php if ($session['position'] == 'reservation' OR $session['authority'] > 1 OR $session['position'] == 'therapist') {?>
         <a href="#accounts-reservation" class="nav-header <?php if($modul == 'reservation'){echo '';} else {echo 'collapsed';}?>" data-toggle="collapse"><i class="icon-briefcase"></i>Reservation</a>
         <ul id="accounts-reservation" class="nav nav-list collapse <?php if($modul == 'reservation'){echo 'in';}?>">
+		<?php if ($session['position'] == 'reservation' OR $session['authority'] > 1) {?>
         	<li <?php if(isset($sidebar_new_reservation)){ echo $view; } ?>>
 				<?php echo anchor('reservation/admin', 'New Reservation' ); ?>
 			</li>
             <li <?php if(isset($sidebar_list_reservation)){ echo $view; } ?>>
 				<?php echo anchor('reservation/admin/list_reservation', 'Reservation List' ); ?>
 			</li>
+		<?php } ?>
+		<?php if ($session['position'] == 'therapist' OR $session['position'] == 'reservation' OR $session['authority'] > 1){?>
 			<li <?php if(isset($sidebar_room_available)){ echo $view; } ?>>
 				<?php echo anchor('reservation/admin/room_available', 'Available Room' ); ?>
 			</li>
+		<?php } ?>
         </ul>
 		<?php } ?>
 		<!-- Reservation Sidebar -->
@@ -64,18 +68,22 @@
 		<!-- Cashier Sidebar -->
 		
 		<!-- Report Sidebar -->
-		<?php if ($session['position'] == 'report' OR $session['authority'] > 1) {?>
+		<?php if ($session['position'] == 'report' OR $session['authority'] > 1 OR $session['position'] == 'therapist') {?>
 		<a href="#accounts-report" class="nav-header <?php if($modul == 'report'){echo '';} else {echo 'collapsed';}?>" data-toggle="collapse"><i class="icon-file"></i>Report</a>
         <ul id="accounts-report" class="nav nav-list collapse <?php if($modul == 'report'){echo 'in';}?>">
+			<?php if ($session['position'] == 'report' OR $session['authority'] > 1){?>
         	<li <?php if(isset($sidebar_report_payment)){ echo $view; } ?>>
 				<?php echo anchor('report/generate/payment', 'Payment Report' ); ?>
-			</li>
-            <li <?php if(isset($sidebar_report_therapist)){ echo $view; } ?>>
-				<?php echo anchor('report/generate/therapist', 'Therapist Report' ); ?>
 			</li>
 			<li <?php if(isset($sidebar_report_product)){ echo $view; } ?>>
 				<?php echo anchor('report/generate/product', 'Product Report' ); ?>
 			</li>
+			<?php } ?>
+			<?php if ($session['position'] == 'therapist' OR $session['position'] == 'report' OR $session['authority'] > 1){?>
+            <li <?php if(isset($sidebar_report_therapist)){ echo $view; } ?>>
+				<?php echo anchor('report/generate/therapist', 'Therapist Report' ); ?>
+			</li>
+			<?php } ?>
         </ul>
 		<?php } ?>
 		<!-- Report Sidebar -->

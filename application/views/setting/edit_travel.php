@@ -5,7 +5,8 @@
 			<?php 
 			
 			$attributes = array('class'=>'form','id'=>'wizard3');
-			echo form_open('setting/admin/insert_travel', $attributes);?>
+			echo form_open('setting/admin/update_travel', $attributes);
+			echo form_hidden('id', $travel->id_travel);?>
                 <fieldset class="step" id="w2first">
                     <h1></h1>
 					<div class="formRow">
@@ -15,6 +16,7 @@
 						$tc = array(
 							'name' => 'trv_code',
 							'id'   => 'trv_code',
+							'value'=> $travel->trv_code
 						);
 						echo form_input($tc);?>
 						</div>
@@ -27,6 +29,7 @@
 						$tn = array(
 							'name' => 'trv_name',
 							'id'   => 'trv_name',
+							'value'=> $travel->trv_name
 						);
 						echo form_input($tn);?>
 						</div>
@@ -39,6 +42,7 @@
 						$ta = array(
 							'name' => 'trv_add',
 							'id'   => 'trv_add',
+							'value'=> $travel->trv_address
 						);
 						echo form_input($ta);?>
 						</div>
@@ -51,6 +55,7 @@
 						$tp = array(
 							'name' => 'trv_phn',
 							'id'   => 'trv_phn',
+							'value'=> $travel->trv_phone
 						);
 						echo form_input($tp);?>
 						</div>
@@ -63,6 +68,7 @@
 						$te = array(
 							'name' => 'trv_mail',
 							'id'   => 'trv_mail',
+							'value'=> $travel->trv_mail
 						);
 						echo form_input($te);?>
 						</div>
@@ -80,49 +86,4 @@
         </div>
 </div>
 </div>
-<div class="block span9">
-	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
-        <tfoot>
-			<tr><td colspan=8><div class="pagination"><?php echo $this->pagination->create_links();?></div></td></tr>
-		</tfoot>
-		<thead>
-			<tr>
-				<th>No</th>
-				<th>Code</th>
-				<th>Name</th>
-				<th>Address</th>
-				<th>Phone</th>
-				<th>Email</th>
-				<th>Hide Status</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php 
-		if ($travel != NULL)
-		{
-		$num = 1;
-		foreach ($travel as $row_rm)
-		{ 
-			?>
-			<tr>
-				<td><?php echo $num++ ?></td>
-				<td><?php echo $row_rm['trv_code'] ?></td>
-				<td><?php echo $row_rm['trv_name'] ?></td>
-				<td><?php echo $row_rm['trv_address'] ?></td>
-				<td><?php echo $row_rm['trv_phone'] ?></td>
-				<td><?php echo $row_rm['trv_mail'] ?></td>
-				<td><center><?php echo $row_rm['trv_hide_status'] ?></td>
-				
-				<td><center><?php 
-					if ($row_rm['trv_hide_status'] == 'no'){
-						echo anchor('setting/admin/void_travel/'.$row_rm['id_travel'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide Travel', 'title'=>'Hide Travel'))); 
-						echo '&nbsp'.anchor('setting/admin/edit_travel/'.$row_rm['id_travel'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit Travel', 'title'=>'Edit Travel')));
-					} else {
-						echo anchor('setting/admin/show_travel/'.$row_rm['id_travel'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Travel', 'title'=>'Show Travel')));
-					}
-				?></td>
-            </tr><?php } } ?>
-        </tbody>
-    </table>
 </div>

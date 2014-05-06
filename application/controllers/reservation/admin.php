@@ -243,14 +243,14 @@ class Admin extends CI_Controller {
 			{
 				$end = '00:00';
 			} else { $end = $this->input->post('end');}
-			if ($this->input->post('dollar') == 'yes')
+			if ($this->input->post('rupiah') == 'yes')
 			{
-				$payment = 'dollar';
-			} else { $payment = 'rupiah'; }
+				$payment = 'rupiah';
+			} else { $payment = 'dollar'; }
 			$data = array(
 					'rpd_res_id' => $this->input->post('res_code'),
 					'rpd_room' => $this->input->post('room'),
-					'rpd_product' => $product->prod_name,
+					'rpd_product' => $product->prod_code,
 					'rpd_therapist' => $this->input->post('therapist'),
 					'rpd_rate' => $product->prod_rate,
 					'rpd_rate_dollar' => $product->prod_rate_dollar,
@@ -272,82 +272,109 @@ class Admin extends CI_Controller {
 				# Masukkan data ke database melalui model
 				if ($this->reservation_model->get_available_therapist($this->input->post('therapist'), $this->input->post('start'), $end, $this->input->post('res_date')) >= 1){
 						redirect('reservation/admin/add_detail_pax/'.$this->input->post('res_code').'/therapist_not_available');
+				} else 
+				{
+					$id_rpd =  $this->reservation_model->insert_data_pax($data);
+					if ($this->input->post('therapist') != '')
+					{
+						$therapist = array(
+										'thw_code' => $this->input->post('therapist'),
+										'thw_date' => $this->input->post('res_date'),
+										'thw_start_time' => $this->input->post('start'),
+										'thw_end_time' => $this->input->post('end'),
+										'thw_id_rpd' => $id_rpd
+							);
+							$this->reservation_model->insert_therapist_workhour($therapist);
 					}
-				$id_rpd =  $this->reservation_model->insert_data_pax($data);
-				if ($this->input->post('therapist') != '')
-				{
-					$therapist = array(
-									'thw_code' => $this->input->post('therapist'),
-									'thw_date' => $this->input->post('res_date'),
-									'thw_start_time' => $this->input->post('start'),
-									'thw_end_time' => $this->input->post('end'),
-									'thw_id_rpd' => $id_rpd
+					if ($this->input->post('room') != '')
+					{
+						$cat_room = $this->reservation_model->get_room_cat_by_room_no($this->input->post('room'));
+						$available = array(
+									'rav_room_name' => $this->input->post('room'),
+									'rav_id_rpd' => $id_rpd,
+									'rav_start' => $this->input->post('start'),
+									'rav_end' => $this->input->post('end'),
+									'rav_book_date' => $this->input->post('res_date'),
+									'rav_status' => 'book'
 						);
-						$this->reservation_model->insert_therapist_workhour($therapist);
-				}
-				if ($this->input->post('room') != '')
-				{
-					$cat_room = $this->reservation_model->get_room_cat_by_room_no($this->input->post('room'));
-					$available = array(
-								'rav_room_name' => $this->input->post('room'),
-								'rav_id_rpd' => $id_rpd,
-								'rav_start' => $this->input->post('start'),
-								'rav_end' => $this->input->post('end'),
-								'rav_book_date' => $this->input->post('res_date'),
-								'rav_status' => 'book'
-					);
+						
+						$this->reservation_model->insert_available_list($available);
+					}
 					
-					$this->reservation_model->insert_available_list($available);
+					redirect('reservation/admin/add_detail_pax/'.$this->input->post('res_code'));
 				}
-				
-				redirect('reservation/admin/add_detail_pax/'.$this->input->post('res_code'));
-			
 			}
 		} else {
 			redirect('reservation/admin/add_detail_pax/'.$this->input->post('res_code').'/invalid');
 		}
 	}
 	
-	public function print_reservation()
+	public function set_therapist()
 	{
 		# Log Data
 		$user = $this->session->userdata('log_data');
 		
 		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'reservation', 1))
+		if (!$this->url_app->auth_limit($user, 'reservation', 1)  AND !$this->url_app->auth_limit($user, 'therapist', 1))
 		{
 			redirect('notice/not_authorized');
 		}
 		
+		# Load Model connect to database
+		$this->load->model('reservation_model');
+		
+		# Page Data
+		$page['page_title'] = $this->session->userdata('title');
+		$page['modul'] = 'reservation';
+		$page['sidebar_room_available'] = 'on';
+		
+		$data['therapist'] = $this->reservation_model->get_data_therapist_open();
+		$data['data_pax'] = $this->reservation_model->get_data_pax_by_id($this->uri->segment(4));
+		
 		# Application Log
 		$this->app_log->record($user['username'], $this->uri->uri_string());
 		
-		# Model Call
-		$this->load->model('reservation_model','', TRUE);
-		$content['title'] = $this->session->userdata('title');
-		$content['res_code'] = $this->uri->segment(4);			
-		$content['data_pax'] = $this->reservation_model->get_data_pax($this->uri->segment(4));
+		#view call
+		$this->load->view('template/header',$page);
+		$this->load->view('template/sidebar');
+		$this->load->view('template/breadcumb');
+		$this->load->view('reservation/set_therapist',$data);
+		$this->load->view('template/footer');
+	}
+	
+	public function update_data_therapist()
+	{
+		# Log Data
+		$user = $this->session->userdata('log_data');
 		
-		$html = '';
-		$html .= $this->load->view('reservation/print',$content, true);
+		# Authentication Limit
+		if (!$this->url_app->auth_limit($user, 'reservation', 1)  AND !$this->url_app->auth_limit($user, 'therapist', 1))
+		{
+			redirect('notice/not_authorized');
+		}
 		
-		$pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+		# Load Model connect to database
+		$this->load->model('reservation_model');
 		
-		$pdf->SetTitle('The Banjar Bali');
-		$pdf->SetAutoPageBreak(false);
-		$pdf->SetAuthor('Prima Winangun');
-		$pdf->SetDisplayMode('real', 'default');
-		$pdf->setPrintHeader(false);
-		$pdf->setPrintFooter(false);
-		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-		$pdf->SetMargins(0, 0, 0);
-		$pdf->AddPage();
+		# Application Log
+		$this->app_log->record($user['username'], $this->uri->uri_string());
 		
-		$pdf->writeHTML($html, true, false, true, false, '');
+		if ($this->reservation_model->get_available_therapist($this->input->post('therapist'), $this->input->post('start'), $this->input->post('end'), $this->input->post('res_date')) >= 1)
+		{
+			redirect('reservation/admin/set_therapist/'.$this->input->post('res_id').'/therapist_not_available');
+		} else {
+			$therapist = array(
+				'thw_code' => $this->input->post('therapist'),
+				'thw_date' => $this->input->post('res_date'),
+				'thw_start_time' => $this->input->post('start'),
+				'thw_end_time' => $this->input->post('end'),
+				'thw_id_rpd' => $this->input->post('res_id')
+			);
+			$this->reservation_model->insert_therapist_workhour($therapist);
+			$this->reservation_model->set_data_detail_pax($this->input->post('res_id'), $this->input->post('therapist'));
 			
-		$pdf->lastPage();
-		$pdf->Output('Reservation-Bill.pdf', 'I');
+			redirect('reservation/admin/room_available');
+		}
 	}
 	
 	## ---------------------- ##
@@ -513,7 +540,7 @@ class Admin extends CI_Controller {
 		$user = $this->session->userdata('log_data');
 		
 		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'reservation', 1))
+		if (!$this->url_app->auth_limit($user, 'reservation', 1) AND !$this->url_app->auth_limit($user, 'therapist', 1))
 		{
 			redirect('notice/not_authorized');
 		}
@@ -529,6 +556,7 @@ class Admin extends CI_Controller {
 		# Retrieve data from database
 		$data['room'] = $this->reservation_model->get_room_list();
 		$data['date'] = date('Y-m-d', now());
+		
 		foreach ($data['room'] as $row_room)
 		{
 			$data['room'.$row_room->room_name] = $this->reservation_model->get_all_room($data['date'], $row_room->room_name);
@@ -551,7 +579,7 @@ class Admin extends CI_Controller {
 		$user = $this->session->userdata('log_data');
 		
 		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'reservation', 1))
+		if (!$this->url_app->auth_limit($user, 'reservation', 1) AND !$this->url_app->auth_limit($user, 'therapist', 1))
 		{
 			redirect('notice/not_authorized');
 		}
@@ -589,7 +617,7 @@ class Admin extends CI_Controller {
 		$user = $this->session->userdata('log_data');
 		
 		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'reservation', 1))
+		if (!$this->url_app->auth_limit($user, 'reservation', 1) AND !$this->url_app->auth_limit($user, 'therapist', 1))
 		{
 			redirect('notice/not_authorized');
 		}

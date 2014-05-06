@@ -96,14 +96,16 @@
 			<tr>
 				<td><label>Payment Type </label></td><td>:</td>
 				<td align="right">
-                        <div class="formRight">
-						<select id="pay_type" name="pay_type">  <!--Call run() function-->
+                    <div class="formRight">
+						<select id="pay_type" name="pay_type" onchange="javascript:showCCDetail(this.value)">  <!--Call run() function-->
 							 <option value="Cash">Cash</option>
 							 <option value="Credit_Card">Credit Card</option>
 							 <option value="Debit_Card">Debit Card</option>
 							 <option value="Hutang">Hutang</option>     
 							 <option value="FOC">FOC</option>     
 						</select>
+					</div>
+				</td>
 			</tr>
 			<tr>
 				<td></td><td></td><td align="right">
@@ -114,9 +116,43 @@
 							 <option value="Hutang">Hutang</option>     
 							 <option value="FOC">FOC</option>     
 						</select>
-						</div>
 				</td>
 			</tr>
+			<tr class="cc_detail">
+				<td><label>Card ID</label></td><td>:</td>
+				<td align="right">
+                        <div class="formRight">
+						<?php 
+						$ccid = array(
+							'name' => 'cc_id',
+							'id'   => 'cc_id',
+						);
+						echo form_input($ccid);?></div>
+				</td>
+			<tr>
+			<tr class="cc_detail">
+				<td><label>Card Name</label></td><td>:</td>
+				<td align="right">
+                        <div class="formRight">
+						<?php 
+						$ccn = array(
+							'name' => 'cc_name',
+							'id'   => 'cc_name',
+						);
+						echo form_input($ccn);?></div>
+				</td>	
+			<tr>
+			<tr class="cc_detail">
+				<td><label>Bank</label></td><td>:</td>
+				<td align="right">
+                        <div class="formRight">
+						<?php 
+						$ccn = array(
+							'name' => 'cc_bank',
+							'id'   => 'cc_bank',
+						);
+						echo form_input($ccn);?></div>
+				</td>	
 			<tr>
 				<td><label>Discount </label></td><td>:</td>
 				<td align="right">

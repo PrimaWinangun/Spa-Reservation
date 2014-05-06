@@ -163,6 +163,7 @@ class Payment extends CI_Controller {
 		$rsv = $this->uri->segment(4, TRUE);
 		$data['rsv_detail'] = $this->payment_model->search_detail_reservasi($rsv);
 		$data['rsv_data'] = $this->payment_model->search_data_reservasi($rsv);
+		$data['payment_type'] = $this->payment_model->get_payment_type();
 		
 		# Application Log
 		$this->app_log->record($user['username'], $this->uri->uri_string());
@@ -219,11 +220,15 @@ class Payment extends CI_Controller {
 				'rb_paid_usd' => $this->input->post('grand_usd'),
 				'rb_paid_idr_2' => $this->input->post('grand_idr_2'),
 				'rb_paid_usd_2' => $this->input->post('grand_usd_2'),
+				'rb_cc_id' => $this->input->post('cc_id'),
+				'rb_cc_name' => $this->input->post('cc_name'),
+				'rb_cc_bank' => $this->input->post('cc_bank'),
 				'rb_update_by' => $user['username'],
 				'rb_transaction_by' => $user['username'],
 		);
 		
 		$this->payment_model->insert_data_payment($data);
+		$this->session->set_flashdata('payment_detail', $data);
 		$this->payment_model->update_reservation_status($this->input->post('res_code'));
 		$detail = $this->payment_model->get_data_pax($this->input->post('res_code'));
 		foreach ($detail as $row_detail)
@@ -235,23 +240,41 @@ class Payment extends CI_Controller {
 		# Application Log
 		$this->app_log->record($user['username'], $this->uri->uri_string());
 		
-		redirect('cashier/payment/new_payment');
+		redirect('cashier/payment/print_interface');
 	}
 	
-	public function print_reservation()
+	public function print_interface()
 	{
+		$this->session->keep_flashdata('payment_detail');
+		
+		$this->load->view('cashier/script/print_interface');
+		
+		$this->output->set_header('refresh:1;url=new_payment');
+	}
+	
+	public function print_payment()
+	{
+		# Log Data
+		$user = $this->session->userdata('log_data');
+		
+		# Get data from session
+		$payment = $this->session->flashdata('payment_detail');
+		
 		# Model Call
-		$this->load->model('reservation_model','', TRUE);
+		$this->load->model('payment_model','', TRUE);
 		$content['title'] = $this->session->userdata('title');
-		$content['res_code'] = $this->uri->segment(4);			
-		$content['data_pax'] = $this->reservation_model->get_data_pax($this->uri->segment(4));
+		$content['res_code'] = $payment['rb_res_code'];			
+		$content['pay_code'] = $payment['rb_pay_code'];			
+		$content['data_pax'] = $this->payment_model->search_detail_reservasi($payment['rb_res_code']);
+		$content['data_pay'] = $payment;
 		
 		# Application Log
 		$this->app_log->record($user['username'], $this->uri->uri_string());
 		
 		$html = '';
-		$html .= $this->load->view('reservation/print',$content, true);
+		$html .= $this->load->view('cashier/print/billing',$content, true);
 		
+		$this->load->view('cashier/print/billing',$content);
 		$pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
 		
 		$pdf->SetTitle('The Banjar Bali');
@@ -268,7 +291,9 @@ class Payment extends CI_Controller {
 		$pdf->writeHTML($html, true, false, true, false, '');
 			
 		$pdf->lastPage();
-		$pdf->Output('Reservation-Bill.pdf', 'I');
+		$pdf->Output('Payment-Bill.pdf', 'I');
+		
+		redirect('cashier/payment/new_payment');
 	}
 	
 	## ------------------ ##

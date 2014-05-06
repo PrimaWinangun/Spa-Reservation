@@ -1,5 +1,5 @@
-<div class="block span4">
-<a href="#page-stats" class="block-heading" data-toggle="collapse"> Reservation Code <?php echo $this->uri->segment(4);?></a>
+<div class="block span3">
+<a href="#page-stats" class="block-heading" data-toggle="collapse"> New Therapist</a>
 <div id="page-stats1" class="block-body collapse in">
 	<div id="myTabContent" class="tab-content">
 			<?php 
@@ -15,7 +15,6 @@
 						$tn = array(
 							'name' => 'therapist_name',
 							'id'   => 'therapist',
-							'style'=> 'width:50%',
 						);
 						echo form_input($tn);?>
 						</div>
@@ -28,7 +27,6 @@
 						$tc = array(
 							'name' => 'therapist_code',
 							'id'   => 'therapist',
-							'style'=> 'width:50%',
 						);
 						echo form_input($tc);?>
 						</div>
@@ -46,13 +44,10 @@
         </div>
 </div>
 </div>
-<div class="block span8">
-<a href="#page-stats" class="block-heading" data-toggle="collapse">Reservation Code <?php echo $this->uri->segment(4);?></a>
-<div id="page-stats2" class="block-body collapse in">
-	<div id="myTabContent" class="tab-content">
+<div class="block span9">
 	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
         <tfoot>
-			<tr><td colspan=9></td></tr>
+			<tr><td colspan=6><div class="pagination"><?php echo $this->pagination->create_links();?></div></td></tr>
 		</tfoot>
 		<thead>
 			<tr>
@@ -60,6 +55,7 @@
 				<th>Code</th>
 				<th>Name</th>
 				<th>Status</th>
+				<th>Hide Status</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -67,7 +63,8 @@
 		<?php 
 		if ($therapist != NULL)
 		{
-		$num = 1;
+		if ($this->uri->segment(4) == NULL)
+		{ $num = 1; } else { $num = $this->uri->segment(4, 1) + 1; }
 		foreach ($therapist as $row_thr)
 		{ 
 			?>
@@ -76,11 +73,17 @@
 				<td><center><?php echo $row_thr['thr_code']?></td>
 				<td><center><?php echo $row_thr['thr_name']?></td>
 				<td><center><?php echo $row_thr['thr_status']?></td>
+				<td><center><?php echo $row_thr['thr_hide_status']?></td>
 				
-				<td><center><?php echo anchor('setting/admin/void_therapist/'.$row_thr['id_therapist']/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'delete'); ?></td>
+				<td><center><?php 
+					if ($row_thr['thr_hide_status'] == 'no'){
+						echo anchor('setting/admin/void_therapist/'.$row_thr['id_therapist'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide thr', 'title'=>'Hide thr'))); 
+						echo '&nbsp'.anchor('setting/admin/edit_therapist/'.$row_thr['id_therapist'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit thr', 'title'=>'Edit thr')));
+					} else {
+						echo anchor('setting/admin/show_therapist/'.$row_thr['id_therapist'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show thr', 'title'=>'Show thr')));
+					}
+				?></td>
             </tr><?php } } ?>
         </tbody>
     </table>
-</div>
-</div>
 </div>

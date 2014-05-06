@@ -58,8 +58,8 @@ function hitungPaymentType()
 	var final_idr = total_idr + tax_idr;
 	var final_usd = total_usd + tax_usd;
 
-	document.getElementById("tax_idr").value = total_idr;
-	document.getElementById("tax_usd").value = total_usd.toFixed(2);
+	document.getElementById("tax_idr").value = tax_idr;
+	document.getElementById("tax_usd").value = tax_usd.toFixed(2);
 	document.getElementById("dis").value = discount;
 	document.getElementById("dis_idr").value = dis_idr;
 	document.getElementById("dis_usd").value = dis_usd.toFixed(2);
@@ -86,8 +86,8 @@ function hitungdiscount()
 	var final_idr = total_idr + tax_idr;
 	var final_usd = total_usd + tax_usd;
 
-	document.getElementById("tax_idr").value = total_idr;
-	document.getElementById("tax_usd").value = total_usd.toFixed(2);
+	document.getElementById("tax_idr").value = tax_idr;
+	document.getElementById("tax_usd").value = tax_usd.toFixed(2);
 	document.getElementById("grand_idr").value = final_idr;
 	document.getElementById("grand_usd").value = final_usd.toFixed(2);
 	document.getElementById("grand_idr_2").value = 0;
@@ -147,13 +147,54 @@ function hitungpayment_usd()
 function disabledEnabled()
 {
 	var pay_type = document.getElementById("pay_type_2").value;
+	
+	var rate_idr = document.getElementById("rate");
+	var rate_usd = document.getElementById("rate_dollar");
+	var ppn = document.getElementById("tax");
+	var tax_idr = Number(ppn.value)*Number(rate_idr.value)/100;
+	var tax_usd = Number(ppn.value)*Number(rate_usd.value)/100;
+	
 	if ( pay_type != '-')
 	{
+		if ( pay_type == 'Credit_Card' || pay_type == 'Debit_Card')
+		{
+			$('.cc_detail').show();
+			$("#cc_id").removeAttr("disabled"); 
+			$("#cc_name").removeAttr("disabled"); 
+		} else {
+			$('.cc_detail').hide();
+			$("#cc_id").attr("disabled", "disabled"); 
+			$("#cc_name").attr("disabled", "disabled"); 
+		}
 		$("#grand_idr_2").removeAttr("disabled"); 
 		$("#grand_usd_2").removeAttr("disabled"); 
 	} else {
+		document.getElementById("grand_usd").value = (Number(rate_usd.value)+tax_usd).toFixed(2);
+		document.getElementById("grand_usd_2").value = 0;
+		document.getElementById("grand_idr").value = Number(rate_idr.value)+tax_idr;
+		document.getElementById("grand_idr_2").value = 0;
+		
+		$("#grand_idr_2").attr("disabled", "disabled"); 
+		$("#grand_usd_2").attr("disabled", "disabled"); 
+		$('.cc_detail').hide();
+		$("#cc_id").attr("disabled", "disabled"); 
+		$("#cc_name").attr("disabled", "disabled"); 
+	}
+}
+
+function showCCDetail()
+{
+	var pay_type = document.getElementById("pay_type").value;
+	if ( pay_type == 'Credit_Card' || pay_type == 'Debit_Card')
+	{
+		$('.cc_detail').show();
+		$("#cc_id").removeAttr("disabled"); 
+		$("#cc_name").removeAttr("disabled"); 
+	} else {
+		$('.cc_detail').hide();
 		$("#grand_idr_2").attr("disabled", "disabled"); 
 		$("#grand_usd_2").attr("disabled", "disabled"); 
 	}
 }
+
 </script>

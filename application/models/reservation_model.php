@@ -114,6 +114,14 @@ class Reservation_model extends CI_Model {
 		 return $query->result_array();
 	 }
 	 
+	 public function get_data_pax_by_id($pax)
+	 {
+		 $this->db->where('id_rpd', $pax);
+		 $this->db->join('tbb_reservasi', 'tbb_reservasi.res_code = tbb_reservasi_pax_detail.rpd_res_id');
+		 $query = $this->db->get('tbb_reservasi_pax_detail');
+		 return $query->result();
+	 }
+	 
 	 public function total_detail_pax($pax)
 	 {
 		$this->db->where('rpd_res_id', $pax);
@@ -131,13 +139,14 @@ class Reservation_model extends CI_Model {
 	 
 	 public function get_data_room_open()
 	 {	
-		 $this->db->where('room_status', 'open');
+		 $this->db->where('room_hide_status', 'no');
 		 $query = $this->db->get('tbb_room');
 		 return $query->result();
 	 }
 	 
 	 public function get_data_room_by_cat($cat)
 	 {
+		 $this->db->where('room_hide_status', 'no');
 		 $this->db->where('room_category', $cat);
 		 $query = $this->db->get('tbb_room');
 		 return $query->result();
@@ -152,7 +161,7 @@ class Reservation_model extends CI_Model {
 	 
 	 public function get_data_therapist_open()
 	 {	
-		 $this->db->where('thr_status', 'open');
+		 $this->db->where('thr_hide_status', 'no');
 		 $query = $this->db->get('tbb_therapist');
 		 return $query->result_array();
 	 }
@@ -183,6 +192,7 @@ class Reservation_model extends CI_Model {
 	 
 	 public function get_room_list()
 	 {
+		 $this->db->where('room_hide_status', 'no');
 		$query = $this->db->get('tbb_room');
 		return $query->result();
 	 }
@@ -256,6 +266,14 @@ class Reservation_model extends CI_Model {
 		
 		$this->db->where('room_name', $room);
 		$this->db->update('tbb_room', $open);
+	 } 
+	 
+	 public function set_data_detail_pax($id, $therapist)
+	 {
+		$therapist = array('rpd_therapist' => $therapist);
+		
+		$this->db->where('id_rpd', $id);
+		$this->db->update('tbb_reservasi_pax_detail', $therapist);
 	 }
 	 
 	 ## END UPDATE DATA ##

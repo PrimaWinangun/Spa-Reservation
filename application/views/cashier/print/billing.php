@@ -10,7 +10,7 @@ html {
 table.gridtable {
 	font-family: times,arial,sans-serif;
 	font-size:9px;
-	width: 6.700cm; 
+	width: 6.800cm; 
 	
 }
 table.gridtable td {
@@ -23,40 +23,33 @@ table.gridtable td {
 <body>
 <table class="gridtable">
 	<tr>
-		<td><?php //echo '010-900-'.$db->nofaktur;?></td>
-		<td></td>
-		<td><?php //echo 'No. DBI '.$db->nodb; ?></td>
+		<td colspan="3" align="center"  style="font-size:200%" ><strong><?php echo strtoupper($title)?></strong></td>
 	</tr>
 	<tr>
-		<td colspan="3" align="center"  style="font-size:250%" ><strong><?php echo strtoupper($title)?></strong></td>
+		<td colspan="3" align="center" >JL. Raya Kuta no 46 A</td>
+	</tr>
+</table>
+<table class="gridtable">
+	<tr>
+		<td colspan="4" align="center" ><hr/></td>
 	</tr>
 	<tr>
-		<td colspan="3" align="center" >GEDUNG DANPERA LT 1,2 & 3 KOTA BARU</td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center" >BANDAR KEMAYORAN BLOK B 12 KAV No.8</td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center" >KEMAYORAN JAKARTA PUSAT 10610</td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center" >NPWP : 01.061.170.5-093.000</td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center" ><hr/></td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center" >NOTA PEMBAYARAN JASA GUDANG</td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center" ><hr/></td>
-	</tr>
-	<tr>
-		<td colspan="3" align="center"><br/>DATA PRODUCT</td>
+		<td colspan="4" align="center"><br/>DATA PRODUCT</td>
 	</tr>
     <tr>
-		<td>Reservation Code</td><td>:</td><td><?php echo $res_code; ?></td>
+		<td width="30%">Reservation</td><td width="10%">:</td><td colspan="2"><?php echo $res_code; ?></td>
+	</tr> 
+	<tr>
+		<td>Payment</td><td>:</td><td colspan="2"><?php echo $pay_code; ?></td>
 	</tr>
+	<?php if ($data_pay['rb_cc_id'] != NULL) { ?>
+	 <tr>
+		<td>Card ID</td><td>:</td><td colspan="2"><?php echo $data_pay['rb_cc_id']; ?></td>
+	</tr> 
+	<tr>
+		<td>Card Name</td><td>:</td><td colspan="2"><?php echo $data_pay['rb_cc_name']; ?></td>
+	</tr>
+	<?php } ?>
 </table>
 <table class="gridtable">
 	<tr>
@@ -75,30 +68,82 @@ table.gridtable td {
 	
 <?php 
 $no=0;
-$total_bayar=0;
+$total_idr = 0;
+$total_usd = 0;
 foreach($data_pax as $row_pax)
 { $no++;
 	$pay  = $row_pax['rpd_rate']*$row_pax['rpd_quantity'];
-	$total_bayar  = $total_bayar + $pay;
+	if ($row_pax['rpd_rate_payment'] == 'dollar')
+	{
+		$rate = $row_pax['rpd_rate_dollar'];
+		$harga = $rate * $row_pax['rpd_quantity'];
+		$total_usd = $total_usd + $harga;
+	} else {
+		$rate = $row_pax['rpd_rate'];
+		$harga = $rate * $row_pax['rpd_quantity'];
+		$total_idr = $total_idr + $harga;
+	}
 	
 ?>	
 	<tr>
 		<td align="center"><?php echo $no; ?></td>
 		<td align="left"><?php echo $row_pax['rpd_product']; ?></td>
 		<td align="center"><?php echo $row_pax['rpd_quantity']; ?></td>
-		<td align="right"><?php echo number_format($row_pax['rpd_rate'], 0, ',', '.'); ?></td>
-		<td align="right"><?php echo number_format(($row_pax['rpd_rate']*$row_pax['rpd_quantity']), 0, ',', '.'); ?></td>
+		<td align="right"><?php echo number_format($rate, 2, ',', '.'); ?></td>
+		<td align="right"><?php echo number_format($harga, 0, ',', '.'); ?></td>
 	</tr>
 <?php } ?>
+</table>
+<table class="gridtable">
 	<tr>
 		<td colspan="5"><hr/></td>
 	</tr>
 	<tr>
-		<td colspan="4"><?php echo "TOTAL"; ?></td>
-		<td align="right"><?php echo number_format($total_bayar, 0, ',', '.'); ?></td>
+		<td width="23%"><?php echo "Subtotal"; ?></td>
+		<td width="14%">USD</td><td align="right" width="24%"><?php echo number_format($total_usd, 2, ',', '.'); ?></td>
+		<td width="14%">IDR</td><td align="right" width="24%"><?php echo number_format($total_idr, 0, ',', '.'); ?></td>
 	</tr>
+	<tr>
+		<td><?php echo "Discount"; ?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_discount'], 2, ',', '.'); ?></td>
+		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_discount_rp'], 0, ',', '.'); ?></td>
+	</tr>
+	<tr>
+		<td><?php echo "Tax"; ?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_tax'], 2, ',', '.'); ?></td>
+		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_tax_rp'], 0, ',', '.'); ?></td>
+	</tr>
+	<tr>
+		<td colspan="5"><hr/></td>
+	</tr>
+</table>
+<table class="gridtable">
+	<tr>
+		<td><?php echo "Total"; ?></td><td><?php echo str_replace('_',' ',$data_pay['rb_payment_type'])?></td>
+		<td width="14%">USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd'], 2, ',', '.'); ?></td>
+		<td width="14%">IDR</td><td align="right" width="22%"><?php echo number_format($data_pay['rb_paid_idr'], 0, ',', '.'); ?></td>
+	</tr>
+	<?php if ($data_pay['rb_payment_type_2'] != '-') {?>
+	<tr>
+		<td></td><td><?php echo str_replace('_',' ',$data_pay['rb_payment_type_2'])?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd_2'], 2, ',', '.'); ?></td>
+		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_paid_idr_2'], 0, ',', '.'); ?></td>
+	</tr>
+	<?php } ?>
     <tr>
-		<td colspan="5">&nbsp;</td>
+		<td colspan="6">&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="3" height="30px"></td><td colspan="3" align="center">Transaction By</td>
+	</tr>
+	<tr>
+		<td colspan="3" height="20px"></td><td colspan="3" align="center"><?php echo $data_pay['rb_transaction_by']?></td>
+	</tr>
+	<tr>
+		<td colspan="6" height="10px"></td>
+	</tr>
+	<tr>
+		<td colspan="6" align="center">Terima Kasih Atas Kunjungan Anda</td>
 	</tr>
 </table>
 </body>

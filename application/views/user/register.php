@@ -1,4 +1,4 @@
-        	<div class="block span4">
+  	<div class="block span4">
             	<a href="#page-stats" class="block-heading" data-toggle="collapse">REGISTER NEW USER</a>
         		<div id="page-stats" class="block-body collapse in">
                 <br>
@@ -51,6 +51,7 @@
                                     <option value="manager" name="manager">Manager</option>
                                     <option value="supervisor" name="supervisor">Supervisor</option>
                                 	<option value="reservation" name="reservation">Reservation Staff</option>
+                                	<option value="therapist" name="reservation">Therapist Staff</option>
                                     <option value="cashier" name="cashier">Cashier Staff</option>
                                     <option value="report" name="report">Report Staff</option>
                             	</select>
@@ -79,7 +80,7 @@
                 	<?php echo form_close(); ?>
 			</div>
 		</div>
-		<div class="span8">
+	<div class="block span8">
 		<table cellpadding="0" cellspacing="0" class="table table-bordered">
 		<thead>
 			<tr>
@@ -106,27 +107,28 @@
 			<td><?php echo $this->encrypt->decode($row_usr->ur_level, $this->config->item('encryption_key')); ?></td>
 			<td><?php echo $this->encrypt->decode($row_usr->ur_position, $this->config->item('encryption_key')); ?></td>
 			<?php if ($auth >= 3) {?>
-			<td>
+			<td align="center">
 			<?php
 				if ($this->encrypt->decode($row_usr->ur_logon, $this->config->item('encryption_key')) != 4 AND $auth>=3)
 				{
 					if ($row_usr->ur_approved == 'no')
 					{
-						echo anchor('setting/user/approve_user/'.$row_usr->id_user,'Approve ');
+						echo anchor('setting/user/approve_user/'.$row_usr->id_user,img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Room Category', 'title'=>'Show Room Category')));
 					} else {
-						echo anchor('setting/user/suspend_user/'.$row_usr->id_user,'Suspend ');
+						echo anchor('setting/user/suspend_user/'.$row_usr->id_user,img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide Room Category', 'title'=>'Hide Room Category')));
+						echo '&nbsp '.anchor('setting/user/update/'.$row_usr->id_user, img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit Room Category', 'title'=>'Edit Room Category')));
 					}
-					echo anchor('setting/user/update/'.$row_usr->id_user,'Edit');
 				} else 
 				if ($this->encrypt->decode($row_usr->ur_logon, $this->config->item('encryption_key')) == 4 AND $auth>3)
 				{
 					if ($row_usr->ur_approved == 'no')
 					{
-						echo anchor('setting/user/approve_developer/'.$row_usr->id_user,'Approve ');
+						echo anchor('setting/user/approve_developer/'.$row_usr->id_user,img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Room Category', 'title'=>'Show Room Category')));
 					} else {
-						echo anchor('setting/user/suspend_developer/'.$row_usr->id_user,'Suspend ');
+						echo anchor('setting/user/suspend_developer/'.$row_usr->id_user,img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide Room Category', 'title'=>'Hide Room Category')));
+						echo '&nbsp '.anchor('setting/user/update/'.$row_usr->id_user,img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit Room Category', 'title'=>'Edit Room Category')));
 					}
-					echo anchor('setting/user/update/'.$row_usr->id_user,'Edit');
+					
 				}
 				
 			?>

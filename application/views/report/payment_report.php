@@ -29,7 +29,7 @@
 								'Cash' => 'Cash',
 								'Credit_Credit' => 'Credit Card',
 								'Debit_Credit' => 'Debit Card',
-								'Deposit' => 'Deposit',
+								'Hutang' => 'Hutang',
 								'FOC' => 'FOC',
 							);
 						echo form_dropdown('pay_type',$rc,''); ?>

@@ -106,8 +106,10 @@
 							}
 							if ($$reserv->rpd_therapist == '')
 							{
-								$therapist = anchor('reservation/admin/set_therapist/'.$$reserv->rav_id_rpd,'not set');
-							} else {$therapist = $$reserv->rpd_therapist;}
+								$therapist = 'not set';
+								$link = '<a href="'.base_url().'index.php/reservation/admin/set_therapist/'.$$reserv->rav_id_rpd.'" class="btn btn-primary">Set</a>';
+								$$colour = '#DD9E9E';
+							} else {$therapist = $$reserv->rpd_therapist; $link='';}
 							$$modal = '
 								<div class="modal kecil fade" id="myModal'.$$reserv->rav_id_rpd.'">
 										<div class="modal-dialog">
@@ -128,6 +130,7 @@
 													</table>
 												</div>
 												<div class="modal-footer">
+												'.$link.'
 												  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 												</div>
 											</div>
