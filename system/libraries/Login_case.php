@@ -70,6 +70,23 @@ class Login_case {
 		chmod(FCPATH . 'system/log/log_data_'.$CI->db->insert_id().'.dat', 0600);
 	}
 	
+	public function update_user($id_user, $data)
+	{
+		$CI =& get_instance();
+		$CI->load->database();
+		$CI->load->helper('array');
+		$CI->load->helper('url');
+		$CI->load->library('encrypt');
+		$CI->load->library('session');
+		
+		$CI->db->where('id_user', $id_user);
+		$CI->db->update('user_reservasi', $data);
+		
+		@chmod(FCPATH . 'system/log/log_data_'.$id_user.'.dat', 0777);
+		write_file(FCPATH . 'system/log/log_data_'.$id_user.'.dat', $data['ur_logon'].' '.$data['ur_level'].' '.$data['ur_position'], 'w');
+		@chmod(FCPATH . 'system/temp/log_data_'.$id_user.'.dat', 0600);
+	}
+	
 	public function get_user($modul, $include)
 	{
 		$CI =& get_instance();
@@ -106,6 +123,26 @@ class Login_case {
 		}
 		
 		return $data_user;
+	}
+	
+	public function developer()
+	{
+		$CI =& get_instance();
+		$CI->load->database();
+		$CI->load->helper('array');
+		
+		$user = $CI->db->get('user_reservasi');
+		$userdata = $user->result();
+		$num = 0;
+		
+		foreach ($userdata as $ud)
+		{
+			if ($CI->encrypt->decode($ud->ur_level, $CI->config->item('encryption_key')) == 'developer')
+			{
+				$num++;
+			}
+		}
+		return $num;
 	}
 }
 
