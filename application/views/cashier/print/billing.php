@@ -42,6 +42,7 @@ table.gridtable td {
 	<tr>
 		<td>Payment</td><td>:</td><td colspan="2"><?php echo $pay_code; ?></td>
 	</tr>
+</table>
 <table class="gridtable">
 	<tr>
 		<td colspan="5"><hr/></td>
@@ -105,12 +106,17 @@ foreach($data_pax as $row_pax)
 		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_tax_rp'], 0, ',', '.'); ?></td>
 	</tr>
 	<tr>
+		<td><?php echo "Service"; ?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_service'], 2, ',', '.'); ?></td>
+		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_service_rp'], 0, ',', '.'); ?></td>
+	</tr>
+	<tr>
 		<td colspan="5"><hr/></td>
 	</tr>
 </table>
 <table class="gridtable">
 	<tr>
-		<td><?php echo "Total"; ?></td><td><?php echo str_replace('_',' ',$data_pay['rb_payment_type'])?></td>
+		<td width="15%"><?php echo "Total"; ?></td><td width="17%"><?php echo str_replace('_',' ',$data_pay['rb_payment_type'])?></td>
 		<td width="14%">USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd'], 2, ',', '.'); ?></td>
 		<td width="14%">IDR</td><td align="right" width="22%"><?php echo number_format($data_pay['rb_paid_idr'], 0, ',', '.'); ?></td>
 	</tr>
@@ -125,10 +131,7 @@ foreach($data_pax as $row_pax)
 		<td colspan="6">&nbsp;</td>
 	</tr>
 	<tr>
-		<td colspan="3" height="30px"></td><td colspan="3" align="center">Transaction By</td>
-	</tr>
-	<tr>
-		<td colspan="3" height="20px"></td><td colspan="3" align="center"><?php echo $data_pay['rb_transaction_by']?></td>
+		<td colspan="3" height="30px">Transaction By :  </td><td colspan="3"><?php echo $data_pay['rb_transaction_by']?></td>
 	</tr>
 	<tr>
 		<td colspan="6" height="10px"></td>

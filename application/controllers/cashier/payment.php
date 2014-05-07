@@ -176,6 +176,42 @@ class Payment extends CI_Controller {
 		$this->load->view('template/footer');
 	}
 	
+	public function reprint_reservation()
+	{
+		# Log Data
+		$user = $this->session->userdata('log_data');
+		
+		# Authentication Limit
+		if (!$this->url_app->auth_limit($user, 'cashier', 1))
+		{
+			redirect('notice/not_authorized');
+		}
+		
+		# Load Model connect to database
+		$this->load->model('payment_model');
+		
+		# Page Data
+		$page['page_title'] = $this->session->userdata('title');
+		$page['modul'] = 'cashier';
+		$page['sidebar_new_payment'] = 'on';
+		
+		# Masukkan data ke database melalui model
+		$rsv = $this->uri->segment(4, TRUE);
+		$data['rsv_detail'] = $this->payment_model->search_detail_reservasi($rsv);
+		$data['rsv_data'] = $this->payment_model->search_data_reservasi($rsv);
+		$data['pay_detail'] = $this->payment_model->search_detail_payment($rsv);
+		
+		# Application Log
+		$this->app_log->record($user['username'], $this->uri->uri_string());
+		
+		#view call
+		$this->load->view('template/header', $page);
+		$this->load->view('template/sidebar');
+		$this->load->view('template/breadcumb');
+		$this->load->view('cashier/reprint_payment_detail',$data);
+		$this->load->view('template/footer');
+	}
+	
 	public function submit_payment()
 	{
 		# Log Data
@@ -214,6 +250,8 @@ class Payment extends CI_Controller {
 				'rb_discount_rp' => $this->input->post('dis_idr'),
 				'rb_tax' => $this->input->post('tax_usd'),
 				'rb_tax_rp' => $this->input->post('tax_idr'),
+				'rb_service' => $this->input->post('serv_usd'),
+				'rb_service_rp' => $this->input->post('serv_idr'),
 				'rb_isvoid' => 'no',
 				'rb_paid_date' => date('Y-m-d', now()),
 				'rb_paid_idr' => $this->input->post('grand_idr'),
@@ -233,6 +271,58 @@ class Payment extends CI_Controller {
 			$this->payment_model->update_room_available($row_detail['id_rpd']);
 		}
 		$this->payment_model->update_res_pax_detail_status($this->input->post('res_code'));
+		
+		# Application Log
+		$this->app_log->record($user['username'], $this->uri->uri_string());
+		
+		redirect('cashier/payment/print_interface');
+	}
+	
+	public function reprint_payment()
+	{
+		# Log Data
+		$user = $this->session->userdata('log_data');
+		
+		# Authentication Limit
+		if (!$this->url_app->auth_limit($user, 'cashier', 1))
+		{
+			redirect('notice/not_authorized');
+		}
+		
+		# Load Model connect to database
+		$this->load->model('payment_model');
+		
+		# Get Last Reservation Code
+		$pay_code = $this->payment_model->get_last_payment_code();
+		
+		# Data from View
+		$data = array(
+				'rb_pay_code' => $pay_code,
+				'rb_res_code' => $this->input->post('res_code'),
+				'rb_quantity' => $this->input->post('quantity'),
+				'rb_total' => $this->input->post('rate_dollar'),
+				'rb_total_rp' => $this->input->post('rate'),
+				'rb_payment_type' => $this->input->post('pay_type'),
+				'rb_payment_type_2' => $this->input->post('pay_type_2'),
+				'rb_status' => 'close',
+				'rb_promo' => $this->input->post('promo'),
+				'rb_discount' => $this->input->post('dis_usd'),
+				'rb_discount_rp' => $this->input->post('dis_idr'),
+				'rb_tax' => $this->input->post('tax_usd'),
+				'rb_tax_rp' => $this->input->post('tax_idr'),
+				'rb_service' => $this->input->post('serv_usd'),
+				'rb_service_rp' => $this->input->post('serv_idr'),
+				'rb_isvoid' => 'no',
+				'rb_paid_date' => date('Y-m-d', now()),
+				'rb_paid_idr' => $this->input->post('grand_idr'),
+				'rb_paid_usd' => $this->input->post('grand_usd'),
+				'rb_paid_idr_2' => $this->input->post('grand_idr_2'),
+				'rb_paid_usd_2' => $this->input->post('grand_usd_2'),
+				'rb_update_by' => $user['username'],
+				'rb_transaction_by' => $user['username'],
+		);
+		
+		$this->session->set_flashdata('payment_detail', $data);
 		
 		# Application Log
 		$this->app_log->record($user['username'], $this->uri->uri_string());

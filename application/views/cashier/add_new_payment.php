@@ -69,7 +69,8 @@
 					} else 
 					if ($row_res->res_status == 'paid')
 					{
-						echo anchor('cashier/payment/void_payment/'.$row_res->res_code.'/'.$this->uri->segment(4)/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'Void'); 
+						echo anchor('cashier/payment/void_payment/'.$row_res->res_code.'/'.$this->uri->segment(4)/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'Void '); 
+						echo anchor('cashier/payment/reprint_reservation/'.$row_res->res_code.'/'.$this->uri->segment(4)/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'Reprint');
 					}
 				?></td>
             </tr> 

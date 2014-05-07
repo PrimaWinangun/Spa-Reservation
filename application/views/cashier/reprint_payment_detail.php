@@ -61,17 +61,6 @@
 	
 </div>
 
-<!-- Calculating Javascript -->
-<?php $this->load->view('cashier/script/calculate');
-
-$tx_idr = 0;
-$tx_usd = 0;
-$serv_idr = 0; 
-$serv_usd = 0;
-$sub_idr = 0; 
-$sub_usd = 0; 
-?>
-
 
 <div class="block span5">
 <a href="#page-stats" class="block-heading" data-toggle="collapse"> Reservation Code <?php echo $this->uri->segment(4);?></a>
@@ -81,7 +70,7 @@ $sub_usd = 0;
 			<?php 
 			
 			$attributes = array('class'=>'form','id'=>'wizard3');
-			echo form_open('cashier/payment/submit_payment', $attributes);
+			echo form_open('cashier/payment/reprint_payment', $attributes);
 			echo form_hidden('res_code', $this->uri->segment(4));
 			echo form_hidden('quantity', $quantity);
 			
@@ -92,11 +81,8 @@ $sub_usd = 0;
 				<td width="30%"><label>Price Type</label></td><td>:</td>
 				<td align="right">
                         <div class="formRight">
-						<select id="promo" name="promo" onchange="javascript:hitungPaymentType(this.value)">
-						
-							<?php foreach($payment_type as $row_pay){ ?>
-							 <option value="<?php echo $row_pay->pay_payment_type;?>"><?php echo $row_pay->pay_payment_type;?></option>
-							<?php } ?>
+						<select id="promo" name="promo" readonly="readonly">
+							 <option value="<?php echo $pay_detail->rb_promo;?>"><?php echo $pay_detail->rb_promo;?></option>
 						</select>
 						</div>
 				</td>
@@ -105,46 +91,30 @@ $sub_usd = 0;
 				<td><label>Payment Type </label></td><td>:</td>
 				<td align="right">
                     <div class="formRight">
-						<select id="pay_type" name="pay_type">  <!--Call run() function-->
-							 <option value="Cash">Cash</option>
-							 <option value="Credit_Card">Credit Card</option>
-							 <option value="Debit_Card">Debit Card</option>
-							 <option value="Hutang">Hutang</option>     
-							 <option value="FOC">FOC</option>     
+						<select id="pay_type" name="pay_type" readonly="readonly">  <!--Call run() function-->
+							 <option value="<?php echo $pay_detail->rb_payment_type; ?>"><?php echo str_replace('_',' ',$pay_detail->rb_payment_type) ?></option>   
 						</select>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td></td><td></td><td align="right">
-						<select id="pay_type_2" name="pay_type_2" onchange="javascript:disabledEnabled(this.value)">  <!--Call run() function-->
-							 <option value="-">-</option>
-							 <option value="Credit_Card">Credit Card</option>
-							 <option value="Debit_Card">Debit Card</option> 
-							 <option value="Hutang">Hutang</option>     
-							 <option value="FOC">FOC</option>     
+						<select id="pay_type_2" name="pay_type_2" readonly="readonly>  <!--Call run() function-->
+							 <option value="<?php echo $pay_detail->rb_payment_type_2; ?>"><?php echo str_replace('_',' ',$pay_detail->rb_payment_type_2) ?></option>      
 						</select>
 				</td>
 			</tr>
 			<tr>
 				<td><label>Discount </label></td><td>:</td>
 				<td align="right">
-					<?php 
-						$dis = array(
-							'name' => 'dis',
-							'id'   => 'dis',
-							'style'=> 'width:10%',
-							'value'=> '0',
-							'onchange' => 'javascript:hitungtotal(this.value)'
-						);
-						echo form_input($dis); ?>&nbsp IDR
+					&nbsp IDR
 					<?php
 						$disc_idr = array(
 							'name' => 'dis_idr',
 							'id'   => 'dis_idr',
 							'style'=> 'width:48%',
-							'value'=> '0',
-							'onchange' => 'javascript:hitungdiscount(this.value)'
+							'value'=> $pay_detail->rb_discount_rp,
+							'readonly' => 'readonly'
 						);
 						echo form_input($disc_idr);?>
 						</div>
@@ -159,8 +129,8 @@ $sub_usd = 0;
 							'name' => 'dis_usd',
 							'id'   => 'dis_usd',
 							'style'=> 'width:48%',
-							'value'=> '0.00',
-							'onchange' => 'javascript:hitungdiscount(this.value)'
+							'value'=> $pay_detail->rb_discount,
+							'readonly' => 'readonly'
 						);
 						echo form_input($disc_usd);?>
 						</div>
@@ -171,21 +141,13 @@ $sub_usd = 0;
 				<td><label>Tax </label><td>:</td>
 				<td align="right">
                         <div class="formRight">
-						<?php 
-						$tax = array(
-							'name' => 'tax',
-							'id'   => 'tax',
-							'style'=> 'width:10%',
-							'value'=> 10,
-							'onchange' => 'javascript:hitungtotal(this.value)'
-						);
-						echo form_input($tax); ?>&nbsp IDR
+						&nbsp IDR
 					<?php
 						$tax_idr = array(
 							'name' => 'tax_idr',
 							'id'   => 'tax_idr',
 							'style'=> 'width:48%',
-							'value'=> $tx_idr,
+							'value'=> $pay_detail->rb_tax_rp,
 							'readonly' => 'readonly'
 						);
 						echo form_input($tax_idr);?>
@@ -201,36 +163,24 @@ $sub_usd = 0;
 							'name' => 'tax_usd',
 							'id'   => 'tax_usd',
 							'style'=> 'width:48%',
-							'value'=> number_format($tx_usd, 2, '.',''),
+							'value'=> number_format($pay_detail->rb_tax, 2, '.',''),
 							'readonly' => 'readonly'
 						);
 						echo form_input($tax_usd);?>
 						</div>
                 </td>
 			</tr>
-			<?php 
-				$serv_idr = $total_bayar + $tx_idr; $serv_usd = $total_bayar_dollar + $tx_usd;
-				$sub_idr = $serv_idr * 2.5 / 100; $sub_usd = $serv_usd * 2.5 / 100; 
-			?>
 			<tr>
 				<td><label>Service </label><td>:</td>
 				<td align="right">
                         <div class="formRight">
-						<?php 
-						$srv = array(
-							'name' => 'serv',
-							'id'   => 'serv',
-							'style'=> 'width:10%',
-							'value'=> 2.5,
-							'onchange' => 'javascript:hitungtotal(this.value)'
-						);
-						echo form_input($srv); ?>&nbsp IDR
+						&nbsp IDR
 					<?php
 						$srv_idr = array(
 							'name' => 'serv_idr',
 							'id'   => 'serv_idr',
 							'style'=> 'width:48%',
-							'value'=> $sub_idr,
+							'value'=> $pay_detail->rb_service_rp,
 							'readonly' => 'readonly'
 						);
 						echo form_input($srv_idr);?>
@@ -246,7 +196,7 @@ $sub_usd = 0;
 							'name' => 'serv_usd',
 							'id'   => 'serv_usd',
 							'style'=> 'width:48%',
-							'value'=> number_format($sub_usd, 2, '.',''),
+							'value'=> number_format($pay_detail->rb_service, 2, '.',''),
 							'readonly' => 'readonly'
 						);
 						echo form_input($srv_usd);?>
@@ -262,7 +212,8 @@ $sub_usd = 0;
 							'name' => 'grand_idr',
 							'id'   => 'grand_idr',
 							'style'=> 'width:65%',
-							'value'=> $total_bayar + $tx_idr + $sub_idr,
+							'value'=> $pay_detail->rb_paid_idr,
+							'readonly' => 'readonly'
 						);
 						echo form_input($jk);?></td>
 			</tr>
@@ -273,7 +224,8 @@ $sub_usd = 0;
 							'name' => 'grand_usd',
 							'id'   => 'grand_usd',
 							'style'=> 'width:65%',
-							'value'=> number_format(($total_bayar_dollar + $tx_usd + $sub_usd), 2, '.',''),
+							'value'=> $pay_detail->rb_paid_usd,
+							'readonly' => 'readonly'
 						);
 						echo form_input($jk);?>
 						</div>
@@ -288,9 +240,8 @@ $sub_usd = 0;
 							'name' => 'grand_idr_2',
 							'id'   => 'grand_idr_2',
 							'style'=> 'width:65%',
-							'value'=> '0',
-							'onchange' => 'javascript:hitungpayment_idr(this.value)',
-							'disabled' => 'disabled'
+							'value'=> $pay_detail->rb_paid_idr_2,
+							'readonly' => 'readonly'
 						);
 						echo form_input($jk);?></td>
 			</tr>
@@ -301,9 +252,8 @@ $sub_usd = 0;
 							'name' => 'grand_usd_2',
 							'id'   => 'grand_usd_2',
 							'style'=> 'width:65%',
-							'value'=> '0',
-							'onchange' => 'javascript:hitungpayment_usd(this.value)',
-							'disabled' => 'disabled'
+							'value'=> $pay_detail->rb_paid_usd_2,
+							'readonly' => 'readonly'
 						);
 						echo form_input($jk);?>
 						</div>
@@ -312,7 +262,7 @@ $sub_usd = 0;
 			<tr>
 			<td></td><td></td><td>
 				<div class="btn-toolbar">
-					<button class="btn btn-primary"><i class="icon-save"></i> Submit</button>
+					<button class="btn btn-primary"><i class="icon-save"></i> Reprint</button>
 					<div class="btn-group">
 					</div>
 				</div>

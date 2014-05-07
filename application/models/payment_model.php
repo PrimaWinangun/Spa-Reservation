@@ -205,6 +205,15 @@ class Payment_model extends CI_Model {
 		return $query->row();
 	 }
 	 
+	 public function search_detail_payment($rsv_code)
+	 {
+		$this->db->where('rb_res_code', $rsv_code);
+		$this->db->where('rb_isvoid','no');
+		$query = $this->db->get('tbb_reservation_bill');
+		
+		return $query->row();
+	 }
+	 
 	## UPDATE DATABASE ##
 	
 	public function update_reservation_status($res_code)

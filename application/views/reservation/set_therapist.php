@@ -8,7 +8,7 @@
 	  <?php
 		foreach ($therapist as $thr_list) :
 		{
-			echo "{ value: '".$thr_list['thr_name']."', data: '".$thr_list['thr_code']."' },";
+			echo "{ value: '".$thr_list['thr_name']." (".$thr_list['thr_code'].")', data: '".$thr_list['thr_code']."' },";
 		} endforeach; 
 	  ?>
 	 ];
