@@ -1,12 +1,10 @@
 <div class="block span3">
-<a href="#page-stats" class="block-heading" data-toggle="collapse"> Search Date</a>
+<a href="#page-stats" class="block-heading" data-toggle="collapse"> Search</a>
 <div id="page-stats1" class="block-body collapse in">
 	<div id="myTabContent" class="tab-content">
 	<?php $attributes = array('class'=>'form','id'=>'wizard3');
 		echo form_open('reservation/admin/search_room_available', $attributes);?>
 	<strong>Available Room : <?php echo date('d-m-Y', strtotime($date));?></strong>
-		<fieldset class="step" id="w2first">
-			<h1></h1>
 			<div class="formRow">
                 <label>Search Date :</label>
                 <div class="formRight">
@@ -14,19 +12,37 @@
 					$jk = array(
 						'name' => 'date',
 						'id'   => 'datepicker',
+						'value'=> date('d-m-Y', strtotime($date)),
+						'class'=> 'span9'
 					);
 					echo form_input($jk);
 				?>
-			</div>
-            <div class="clear"></div>
-            </div>
-		</fieldset>
-			<div class="btn-toolbar">
-					<button class="btn btn-primary"><i class="icon-search"></i> Search</button>
+					<button class="btn btn-primary" style="margin-bottom:10px"><i class="icon-search"></i></button>
 					<div class="btn-group">
 					</div>
+				</div>
 			</div>
-        </div>
+	</form>
+	<?php echo form_open('reservation/admin/search_room_by_name');?>
+			<div class="formRow">
+                <label>Search Room :</label>
+                <div class="formRight">
+				<?php 
+					$jk = array(
+						'name' => 'room',
+						'id'   => 'room',
+						'value'=> '',
+						'placeholder' => 'Room Name',
+						'class'=> 'span9'
+					);
+					echo form_input($jk);
+				?>
+					<button class="btn btn-primary" style="margin-bottom:10px"><i class="icon-search"></i></button>
+					<div class="btn-group">
+					</div>
+				</div>
+			</div>
+		</div>
 		</div>
 	</form>
 	<div class="data" id="w2"></div>
@@ -35,6 +51,11 @@
 <div class="block span9">
 <div id="myTabContent" class="tab-content">
 	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
+		<tfoot>
+			<tr>
+				<td colspan="16"><div class="pagination"><?php echo $this->pagination->create_links();?></div></td>
+			</tr>
+		</tfoot>
 		<thead>
 			<tr>
 				<th rowspan="2">Room</th>
@@ -109,7 +130,7 @@
 								$therapist = 'not set';
 								$link = '<a href="'.base_url().'index.php/reservation/admin/set_therapist/'.$$reserv->rav_id_rpd.'" class="btn btn-primary">Set</a>';
 								$$colour = '#DD9E9E';
-							} else {$therapist = $$reserv->rpd_therapist; $link='';}
+							} else {$therapist = $$reserv->rpd_therapist; $link='<a href="'.base_url().'index.php/reservation/admin/edit_therapist/'.$$reserv->rav_id_rpd.'" class="btn btn-primary">Edit</a>';}
 							$$modal = '
 								<div class="modal kecil fade" id="myModal'.$$reserv->rav_id_rpd.'">
 										<div class="modal-dialog">

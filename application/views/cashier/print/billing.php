@@ -26,7 +26,16 @@ table.gridtable td {
 		<td colspan="3" align="center"  style="font-size:200%" ><strong><?php echo strtoupper($title)?></strong></td>
 	</tr>
 	<tr>
-		<td colspan="3" align="center" >JL. Raya Kuta no 46 A</td>
+		<td colspan="3" align="center" >JL. Raya Kuta No. 46A, Br. Abianbase - Kuta</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center" >Telp :(0361) 757725 | Fax : (0361) 757724</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center" >www.thebanjarbali.com</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center" ></td>
 	</tr>
 </table>
 <table class="gridtable">
@@ -34,7 +43,7 @@ table.gridtable td {
 		<td colspan="4" align="center" ><hr/></td>
 	</tr>
 	<tr>
-		<td colspan="4" align="center"><br/>DATA PRODUCT</td>
+		<td colspan="4" align="center"><br/></td>
 	</tr>
     <tr>
 		<td width="30%">Reservation</td><td width="10%">:</td><td colspan="2"><?php echo $res_code; ?></td>
@@ -45,7 +54,7 @@ table.gridtable td {
 </table>
 <table class="gridtable">
 	<tr>
-		<td colspan="5"><hr/></td>
+		<td colspan="5"></td>
 	</tr>
 	<tr>
 		<td align="center" width="10%">NO</td>
@@ -81,8 +90,14 @@ foreach($data_pax as $row_pax)
 		<td align="center"><?php echo $no; ?></td>
 		<td align="left"><?php echo $row_pax['rpd_product']; ?></td>
 		<td align="center"><?php echo $row_pax['rpd_quantity']; ?></td>
-		<td align="right"><?php echo number_format($rate, 2, ',', '.'); ?></td>
-		<td align="right"><?php echo number_format($harga, 0, ',', '.'); ?></td>
+		<?php if ($row_pax['rpd_rate_payment'] == 'dollar')
+			  {?>
+		<td align="right"><?php echo number_format($rate, 3, ',', '.'); ?></td>
+		<td align="right"><?php echo number_format($harga, 3, ',', '.'); ?></td>
+		<?php }else{?>
+				<td align="right"><?php echo number_format($rate, 2, ',', '.'); ?></td>
+				<td align="right"><?php echo number_format($harga, 2, ',', '.'); ?></td>
+		<?php }?>
 	</tr>
 <?php } ?>
 </table>
@@ -92,23 +107,18 @@ foreach($data_pax as $row_pax)
 	</tr>
 	<tr>
 		<td width="23%"><?php echo "Subtotal"; ?></td>
-		<td width="14%">USD</td><td align="right" width="24%"><?php echo number_format($total_usd, 2, ',', '.'); ?></td>
+		<td width="14%">USD</td><td align="right" width="24%"><?php echo number_format($total_usd, 3, ',', '.'); ?></td>
 		<td width="14%">IDR</td><td align="right" width="24%"><?php echo number_format($total_idr, 0, ',', '.'); ?></td>
 	</tr>
 	<tr>
 		<td><?php echo "Discount"; ?></td>
-		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_discount'], 2, ',', '.'); ?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_discount'], 3, ',', '.'); ?></td>
 		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_discount_rp'], 0, ',', '.'); ?></td>
 	</tr>
 	<tr>
 		<td><?php echo "Tax"; ?></td>
-		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_tax'], 2, ',', '.'); ?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_tax'], 3, ',', '.'); ?></td>
 		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_tax_rp'], 0, ',', '.'); ?></td>
-	</tr>
-	<tr>
-		<td><?php echo "Service"; ?></td>
-		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_service'], 2, ',', '.'); ?></td>
-		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_service_rp'], 0, ',', '.'); ?></td>
 	</tr>
 	<tr>
 		<td colspan="5"><hr/></td>
@@ -117,13 +127,13 @@ foreach($data_pax as $row_pax)
 <table class="gridtable">
 	<tr>
 		<td width="15%"><?php echo "Total"; ?></td><td width="17%"><?php echo str_replace('_',' ',$data_pay['rb_payment_type'])?></td>
-		<td width="14%">USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd'], 2, ',', '.'); ?></td>
+		<td width="14%">USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd'], 3, ',', '.'); ?></td>
 		<td width="14%">IDR</td><td align="right" width="22%"><?php echo number_format($data_pay['rb_paid_idr'], 0, ',', '.'); ?></td>
 	</tr>
 	<?php if ($data_pay['rb_payment_type_2'] != '-') {?>
 	<tr>
 		<td></td><td><?php echo str_replace('_',' ',$data_pay['rb_payment_type_2'])?></td>
-		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd_2'], 2, ',', '.'); ?></td>
+		<td>USD</td><td align="right"><?php echo number_format($data_pay['rb_paid_usd_2'], 3, ',', '.'); ?></td>
 		<td>IDR</td><td align="right"><?php echo number_format($data_pay['rb_paid_idr_2'], 0, ',', '.'); ?></td>
 	</tr>
 	<?php } ?>
@@ -131,8 +141,16 @@ foreach($data_pax as $row_pax)
 		<td colspan="6">&nbsp;</td>
 	</tr>
 	<tr>
-		<td colspan="3" height="30px">Transaction By :  </td><td colspan="3"><?php echo $data_pay['rb_transaction_by']?></td>
+		<td colspan="2">Transaction By</td><td colspan="4"><?php echo ': '. ucfirst($data_pay['rb_transaction_by'])?></td>
 	</tr>
+	<tr>
+		<td colspan="2" height="30px">Date</td><td colspan="4"><?php echo ': '. date('d-m-Y',strtotime($data_pay['rb_paid_date']))?></td>
+	</tr>
+	<?php if ($data_pay['rb_instant_pay'] != NULL) {?>
+	<tr>
+		<td colspan="6" height="30px">Based On Transaction : <?php echo ': '. $data_pay['rb_instant_pay']?></td>
+	</tr>
+	<?php } ?>
 	<tr>
 		<td colspan="6" height="10px"></td>
 	</tr>

@@ -31,6 +31,7 @@
 				'name' => 'date',
 				'id'   => 'datepicker',
 				'style'=> 'width:40%',
+				'value'=> date('d-m-Y', now())
 				);
 			echo form_input($date);
 			?>
@@ -38,16 +39,12 @@
         </div>
 		<div class="formRow">
             <label>Travel:</label>
-			<?php 
-			$jb = array();
-			foreach ($travel as $trav_list) :
-			{
-				$jb[$trav_list['trv_code']] = ($trav_list['trv_name']);
-			} endforeach; 
-			echo form_dropdown('travel',$jb,'');
-			?>
-			<div class="clear"></div>
-        </div>
+			<div class="formRight">
+				<input type="text" name="trv" value="" id="trv"/>
+			</div>
+            <div class="clear"></div>
+		</div>
+		<div id="outputbox"><input type="hidden" name="travel" value="" id="travel" /></div>
 		<div class="formRow">
             <label>Guide:</label>
 			<?php 
@@ -144,3 +141,4 @@
 	</div>
 </div>
 </div>
+<?php $this->load->view('reservation/script/travel');?>

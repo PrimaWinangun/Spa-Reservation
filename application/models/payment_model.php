@@ -64,6 +64,27 @@ class Payment_model extends CI_Model {
 		$query = $this->db->get('tbb_reservation_bill');
 		
 		return $query->result();
+	 } 
+	 
+	 public function get_instant_payment()
+	 {
+		$this->db->where('irb_isvoid', 'no');
+		$this->db->where('irb_status', 'open');
+		$this->db->order_by('id_ins_rsv_bill', 'DESC');
+		$query = $this->db->get('tbb_instant_rsv_bill');
+		
+		return $query->result();
+	 }
+	 
+	 public function get_instant_payment_detail($rsv)
+	 {
+		$this->db->where('irb_pay_code', $rsv);
+		$this->db->where('irb_isvoid', 'no');
+		$this->db->where('irb_status', 'open');
+		$this->db->order_by('id_ins_rsv_bill', 'DESC');
+		$query = $this->db->get('tbb_instant_rsv_bill');
+		
+		return $query->row();
 	 }
 	 
 	 public function get_payment_type()
@@ -72,6 +93,15 @@ class Payment_model extends CI_Model {
 		$query = $this->db->get('tbb_payment_type');
 		
 		return $query->result();
+	 }
+	 
+	 public function get_last_kurs()
+	 {
+		$this->db->order_by('id_kurs', 'DESC');
+		$this->db->limit(1);
+		$query = $this->db->get('tbb_kurs');
+		
+		return $query->row();
 	 }
 	 
 	 public function get_payment_list_search_date($search, $num, $offset)
@@ -192,6 +222,7 @@ class Payment_model extends CI_Model {
 		$this->db->where('rpd_res_id', $rsv_code);
 		$this->db->where('rpd_status !=', 'void');
 		$this->db->from('tbb_reservasi_pax_detail');
+		$this->db->order_by('rpd_rate_payment');
 		$query = $this->db->get();
 		
 		return $query->result_array();
@@ -216,16 +247,37 @@ class Payment_model extends CI_Model {
 	 
 	## UPDATE DATABASE ##
 	
+	public function update_instant_payment_status($res_code)
+	{
+		$this->db->where('irb_res_code', $res_code);
+		$this->db->where('irb_isvoid', 'no');
+		$this->db->update('tbb_instant_rsv_bill', array('irb_status' => 'closed'));
+	}
+	
 	public function update_reservation_status($res_code)
 	{
 		$this->db->where('res_code', $res_code);
 		$this->db->update('tbb_reservasi', array('res_status' => 'paid'));
 	}
 	
+	public function update_instant_reservation_status($res_code)
+	{
+		$this->db->where('ins_rsv_code', $res_code);
+		$this->db->where('ins_rsv_status', 'paid');
+		$this->db->update('tbb_instant_reservation', array('ins_rsv_status' => 'closed'));
+	}
+	
 	public function update_res_pax_detail_status($res_code)
 	{
 		$this->db->where('rpd_res_id', $res_code);
 		$this->db->update('tbb_reservasi_pax_detail', array('rpd_status' => 'paid'));
+	}
+	
+	public function update_instant_reservation_detail_status($res_code)
+	{
+		$this->db->where('irpd_rsv_code', $res_code);
+		$this->db->where('irpd_status', 'paid');
+		$this->db->update('tbb_instant_rsv_pax_detail', array('irpd_status' => 'closed'));
 	}
 	
 	public function update_room_available($id_rpd)

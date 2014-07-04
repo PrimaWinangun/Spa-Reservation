@@ -70,9 +70,13 @@ table.gridtable td {
 				<th rowspan="2">Reservation Code</th>
 				<th rowspan="2">Travel</th>
 				<th rowspan="2">Guide</th>
+				<th colspan="2">Paid</th>
 				<th colspan="2">Receivable / AR</th>
+				<th rowspan="2">Status</th>
 			</tr>
 			<tr>
+				<th>IDR</th>
+				<th>USD</th>
 				<th>IDR</th>
 				<th>USD</th>
 			</tr>
@@ -81,6 +85,11 @@ table.gridtable td {
 		$tot_ar_usd = 0;
 		$tot_idr = 0;
 		$tot_usd = 0;
+		$unpaid_usd = 0;
+		$unpaid_idr = 0;
+		$paid_usd = 0;
+		$paid_idr = 0;
+		$status = '';
 		if ($pay_list != NULL)
 		{
 		$num = 1;
@@ -96,11 +105,16 @@ table.gridtable td {
 			{ $ar_idr  = $row_pay->rb_paid_idr_2;
 			  $ar_usd = $row_pay->rb_paid_usd_2; }
 			  
-			$tot_ar_idr = $tot_ar_idr + $ar_idr;
-			$tot_ar_usd = $tot_ar_usd + $ar_usd;
-			
-			$tot_idr = $tot_ar_idr;
-			$tot_usd = $tot_ar_usd;
+			if ($row_pay->rb_status == 'open')
+			{
+				$status = anchor('report/generate/paid_debt/'.$row_pay->id_res_bill,'pay debt');
+				$unpaid_idr = $unpaid_idr + $ar_idr;
+				$unpaid_usd = $unpaid_usd + $ar_usd;
+			} else {
+				$status = 'paid';
+				$paid_idr = $paid_idr + $ar_idr;
+				$paid_usd = $paid_usd + $ar_usd;
+			}
 			
 			?>
 			<tr>
@@ -109,14 +123,24 @@ table.gridtable td {
 				<td><?php echo $row_pay->res_code;?></td>
 				<td><?php echo $row_pay->res_agent;?></td>
 				<td><?php echo $row_pay->res_guide;?></td>
-				<td><div align="right"><?php echo number_format($ar_idr, 2, ',', '.');?></div></td>
-				<td><div align="right"><?php echo number_format($ar_usd, 2, ',', '.');?></div></td>
+				<?php if ($row_pay->rb_status == 'open') { 
+					echo '<td><div align="right">0,00</td><td><div align="right">0,000</td>'; ?>
+					<td><div align="right"><?php echo number_format($ar_idr, 2, ',', '.');?></div></td>
+					<td><div align="right"><?php echo number_format($ar_usd, 3, ',', '.');?></div></td>
+				<?php } else { ?>
+					<td><div align="right"><?php echo number_format($ar_idr, 2, ',', '.');?></div></td>
+					<td><div align="right"><?php echo number_format($ar_usd, 3, ',', '.');?></div></td>
+				<?php echo '<td><div align="right">0,00</td><td><div align="right">0,000</td>'; }?>
+				<td><div align="center"><?php echo $status;?></div></td>
 			</tr>
 		<?php } }?>
 			<tr>
 				<td colspan="5"><div align="right">TOTAL</div></td>
-				<td><div align="right"><?php echo number_format($tot_ar_idr, 2, ',', '.');?></div></td>
-				<td><div align="right"><?php echo number_format($tot_ar_usd, 2, ',', '.');?></div></td>
+				<td><div align="right"><?php echo number_format($paid_idr, 2, ',', '.');?></div></td>
+				<td><div align="right"><?php echo number_format($paid_usd, 3, ',', '.');?></div></td>
+				<td><div align="right"><?php echo number_format($unpaid_idr, 2, ',', '.');?></div></td>
+				<td><div align="right"><?php echo number_format($unpaid_usd, 3, ',', '.');?></div></td>
+				<td></td>
 			</tr>
     </table>
 </body>

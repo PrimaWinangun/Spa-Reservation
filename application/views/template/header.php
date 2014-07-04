@@ -32,36 +32,6 @@
 	
 </script>
 
-<script type="text/javascript">
-function printDiv(divName) {
-    var printContents = document.getElementById(divName).innerHTML;
-    var originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-}
-</script>	
-  
-    <!-- Demo page code -->
-
-   <!-- <style type="text/css">
-        #line-chart {
-            height:300px;
-            width:800px;
-            margin: 0px auto;
-            margin-top: 1em;
-        }
-        .brand { font-family: georgia, serif; }
-        .brand .first {
-            color: #ccc;
-            font-style: italic;
-        }
-        .brand .second {
-            color: #fff;
-            font-weight: bold;
-        }
-    </style>-->
-
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -90,9 +60,12 @@ function printDiv(divName) {
     
         <div class="navbar-inner">
         
-        
-                <a class="logo" href="<?php echo base_url(); ?>"><img src="<?php echo base_url(); ?>wp-content/themes/thebanjarbali/rsv/images/thebanjarbali.png" /></a>
-    
+				<?php $trial = $this->session->userdata('trial');
+				if ($trial == ''){?>
+					<a class="logo" href="<?php echo base_url(); ?>"><img src="<?php echo base_url(); ?>wp-content/themes/thebanjarbali/rsv/images/thebanjarbali.png" /></a>
+				<?php } else {
+					echo '<br/><strong><span style="font-size:30px">Trial Version<span></strong>';
+				}?>
     
                 
                 <ul class="nav pull-right">

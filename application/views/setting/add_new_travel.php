@@ -93,8 +93,10 @@
 				<th>Address</th>
 				<th>Phone</th>
 				<th>Email</th>
+				<?php if ($user['position'] != 'reservation') {?>
 				<th>Hide Status</th>
 				<th>Action</th>
+				<?php } ?>
 			</tr>
 		</thead>
 		<tbody>
@@ -112,6 +114,7 @@
 				<td><?php echo $row_rm['trv_address'] ?></td>
 				<td><?php echo $row_rm['trv_phone'] ?></td>
 				<td><?php echo $row_rm['trv_mail'] ?></td>
+				<?php if ($user['position'] != 'reservation') {?>
 				<td><center><?php echo $row_rm['trv_hide_status'] ?></td>
 				
 				<td><center><?php 
@@ -121,7 +124,7 @@
 					} else {
 						echo anchor('setting/admin/show_travel/'.$row_rm['id_travel'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show Travel', 'title'=>'Show Travel')));
 					}
-				?></td>
+				}?></td>
             </tr><?php } } ?>
         </tbody>
     </table>

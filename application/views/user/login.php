@@ -35,10 +35,15 @@
 	<!-- BEGIN LOGIN -->
 	<div class="content">
 		<!-- BEGIN LOGIN FORM -->
-		
-    <img src="<?php echo base_url(); ?>wp-content/themes/thebanjarbali/rsv/images/thebanjarbali.png" alt="The Banjar Bali"/>
+	<?php if ($trial == ''){	
+		echo '<img src="'.base_url().'wp-content/themes/thebanjarbali/rsv/images/thebanjarbali.png" alt="The Banjar Bali"/>';}
+	?>
         <form class="form-vertical login-form" action="<?php echo base_url(); ?>index.php/login/cek_login" method="post">
-			<h3><strong>LOGIN <span style="font-size:17px">Reservation System</span></h3>
+			<?php if ($trial != ''){
+				echo '<h3><strong>Trial Version</strong></h3>';
+			} else {
+				echo '<h3><strong>LOGIN <span style="font-size:17px">Reservation System</span></h3>';
+			}?>
 			<div class="control-group">
 				<label class="control-label visible-ie8 visible-ie9">Username</label>
 				<div class="controls">

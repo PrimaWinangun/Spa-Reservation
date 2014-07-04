@@ -20,34 +20,7 @@
 <?php if($this->uri->segment(5) == 'therapist_not_available') { ?>
 	<div class="alert alert-error"><strong>Therapist Not Available at the time</strong></div>
 <?php } ?>
-   <script src="<?php echo base_url(); ?>wp-content/themes/thebanjarbali/rsv/lib/js/jquery.maskedinput.min.js" type="text/javascript"></script> 
-  <script type="text/javascript" src="<?php echo base_url(); ?>wp-content/themes/thebanjarbali/rsv/lib/jquery.autocomplete.min.js"></script>
-  <script>
-	$(function(){
-	  var therapist = [
-	  <?php
-		foreach ($therapist as $thr_list) :
-		{
-			echo "{ value: '".$thr_list['thr_name']." (".$thr_list['thr_code'].")', data: '".$thr_list['thr_code']."' },";
-		} endforeach; 
-	  ?>
-	 ];
-  
-	  // setup autocomplete function pulling from therapist[] array
-	  $('#thr').autocomplete({
-		lookup: therapist,
-		onSelect: function (suggestion) {
-		  var thehtml = '<input type="hidden" name="therapist" value="'+ suggestion.data +'" id="therapist" />';
-		  $('#outputbox').html(thehtml);
-		}
-	  });
-});
 
-	jQuery(function($){
-	   $("#time").mask("99:99");
-	   $("#time2").mask("99:99");
-	});
-  </script>
 <div class="row-fluid">
 <div class="block span3">
 <a href="#page-stats" class="block-heading" data-toggle="collapse"> Reservation Code <?php echo $this->uri->segment(4);?></a>
@@ -102,18 +75,12 @@
 				   </script>
 					<div class="formRow">
                         <label>Produk :</label>
-                        <div class="formRight">
-						<?php 
-						$jb = array();
-						foreach ($produk as $prod_list) :
-						{
-							$jb[$prod_list['id_prod']] = ($prod_list['prod_name']);
-						} endforeach; 
-						echo form_dropdown('produk',$jb,'');
-						?>
+                       <div class="formRight">
+							<input type="text" name="prod" value="" id="prod"/>
 						</div>
                         <div class="clear"></div>
-                    </div>
+					</div>
+					<div id="outputprod"><input type="hidden" name="produk" value="" id="produk" /></div>
 					<div class="formRow">
                         <label>Rupiah Pay : <?php echo form_checkbox('rupiah', 'yes');?></label>
                         <div class="clear"></div>
@@ -127,6 +94,24 @@
 						
                     </div>
 					<div id="outputbox"><input type="hidden" name="therapist" value="" id="therapist" /></div>
+					<div class="formRow">
+						<label>Gender : </label>
+						<div class="formRight">
+						<select id="gender" name="gender">
+							 <option value="Male">Male</option>
+							 <option value="Female">Female</option>
+						</select>
+						</div>
+                        <div class="clear"></div>
+					</div>
+					<div class="formRow">
+						<label>Nationality:</label>
+						<div class="formRight">
+							<input type="text" name="nation" value="" id="nation"/>
+						</div>
+                        <div class="clear"></div>	
+                    </div>
+					<div id="outputnat"><input type="hidden" name="nationality" value="" id="nationality" /></div>
 					<div class="formRow">
                         <label>Quantity :</label>
                         <div class="formRight">
@@ -264,24 +249,9 @@
 		</tr><?php }?>
         </tbody>
     </table>
-	<?php 
-		echo form_open('reservation/admin/print_reservation/'.$this->uri->segment(4));
-	?>
-	<div class="btn-toolbar">
-		<p align="right"><button class="btn btn-primary"><i class="icon-save"></i> Print</button></p>
-		<div class="btn-group">
-		</div>
-	</div>
 	<div id="clear"></div>
 	</div>
 </div>
 </div>
 
-<script type="text/javascript" charset="utf-8">
-  $(function() {
-
-    /* For jquery.chained.js */
-    $("#room").chained("#room_cat");
-
-    $("#b").chained("#a");
-</script>
+<?php $this->load->view('reservation/script/jquery');?>

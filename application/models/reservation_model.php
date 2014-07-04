@@ -66,6 +66,13 @@ class Reservation_model extends CI_Model {
 		 return $query->result_array();
 	 }
 	 
+	 public function get_data_nationality()
+	 {
+		$this->db->get('tbb_nationality');
+		 $query = $this->db->get('tbb_nationality');
+		 return $query->result_array();
+	 }
+	 
 	 public function get_today_res_list($date, $num, $offset)
 	 {
 		$this->db->select('*');
@@ -140,6 +147,7 @@ class Reservation_model extends CI_Model {
 	 public function get_data_room_open()
 	 {	
 		 $this->db->where('room_hide_status', 'no');
+		 $this->db->where('room_status', 'open');
 		 $query = $this->db->get('tbb_room');
 		 return $query->result();
 	 }
@@ -147,6 +155,7 @@ class Reservation_model extends CI_Model {
 	 public function get_data_room_by_cat($cat)
 	 {
 		 $this->db->where('room_hide_status', 'no');
+		 $this->db->where('room_status', 'open');
 		 $this->db->where('room_category', $cat);
 		 $query = $this->db->get('tbb_room');
 		 return $query->result();
@@ -155,6 +164,7 @@ class Reservation_model extends CI_Model {
 	 public function get_room_cat_by_room_no($room)
 	 {
 		$this->db->where('room_name', $room);
+		$this->db->where('room_status', 'open');
 		$query = $this->db->get('tbb_room');
 		return $query->row();
 	 }
@@ -190,9 +200,21 @@ class Reservation_model extends CI_Model {
 		return $query->result();
 	 }
 	 
-	 public function get_room_list()
+	 public function get_room_list($num, $offset)
 	 {
-		 $this->db->where('room_hide_status', 'no');
+		$this->db->where('room_hide_status', 'no');
+		$this->db->where('room_status', 'open');
+		$this->db->limit($num, $offset);
+		$query = $this->db->get('tbb_room');
+		return $query->result();
+	 }
+	 
+	 public function get_room_list_by_name($room, $num, $offset)
+	 {
+		$this->db->where('room_hide_status', 'no');
+		$this->db->where('room_status', 'open');
+		$this->db->like('room_name', $room);
+		$this->db->limit($num, $offset);
 		$query = $this->db->get('tbb_room');
 		return $query->result();
 	 }
@@ -215,6 +237,7 @@ class Reservation_model extends CI_Model {
 				  FROM  `tbb_therapist_workhour` 
 				  WHERE `thw_date` =  '$date'
 				  AND (HOUR(`thw_start_time`) <=  '".date('H',strtotime($end))."' AND  `thw_end_time` >=  '$start')
+				  AND `thw_isvoid` = 'no'
 				  AND  `thw_code` =  '$therapist'";
 		$result = $this->db->query($query);
 		return $result->num_rows();
@@ -310,6 +333,13 @@ class Reservation_model extends CI_Model {
 		$this->db->update('tbb_room_available', array('rav_status' => 'void'));
 	 }
 	 
+	 public function void_therapist_workhour($id_res)
+	 {
+		$this->db->where('thw_id_rpd', $id_res);
+		$this->db->where('thw_isvoid', 'no');
+		$this->db->update('tbb_therapist_workhour', array('thw_isvoid' => 'yes'));
+	 }
+	 
 	 ## END VOID DATA ##
 	 
 	 ## COUNT DATA ##
@@ -317,6 +347,23 @@ class Reservation_model extends CI_Model {
 	 public function count_reservation()
 	 {
 		$query = $this->db->get('tbb_reservasi');
+		return $query->num_rows();
+	 }
+	 
+	 public function count_all_room()
+	 {
+		$this->db->where('room_hide_status', 'no');
+		$this->db->where('room_status', 'open');
+		$query = $this->db->get('tbb_room');
+		return $query->num_rows();
+	 }
+	 
+	 public function count_all_room_by_name($room)
+	 {
+		$this->db->where('room_hide_status', 'no');
+		$this->db->where('room_status', 'open');
+		$this->db->like('room_name', $room);
+		$query = $this->db->get('tbb_room');
 		return $query->num_rows();
 	 }
 	 

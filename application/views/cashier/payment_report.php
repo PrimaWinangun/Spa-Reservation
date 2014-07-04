@@ -13,7 +13,7 @@
 			<?php 
 			$us = array();
 			if ($user['authority'] < 2)
-			{ $disabled = 'disabled="disabled"'; } else { $disabled = ''; }
+			{ $disabled = 'readonly="readonly"'; } else { $disabled = ''; }
 			foreach ($list_user as $user_list) :
 			{
 				$us[$user_list['username']] = ($user_list['nama']);
@@ -30,6 +30,7 @@
 								'Cash' => 'Cash',
 								'Credit' => 'Credit',
 								'Deposit' => 'Deposit',
+								'Hutang' => 'Receivable',
 								'FOC' => 'FOC',
 							);
 						echo form_dropdown('pay_type',$rc,''); ?>

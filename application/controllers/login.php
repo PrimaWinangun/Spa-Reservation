@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Login extends CI_Controller {
+class Login extends My_Login {
 
 	/**
 	 * PT Gapura Angkasa
@@ -27,16 +27,6 @@ class Login extends CI_Controller {
 	function __construct()
 	{
         parent::__construct();
-		
-		if (! $this->url_app->check())
-		{
-			if ($this->url_app->available())
-			{
-				redirect('register');
-			} else {
-				redirect('invalid');
-			}
-		}
 	} 
 	
 	public function index()
@@ -48,7 +38,8 @@ class Login extends CI_Controller {
 			{
 				# view login form
 				$data['message']='User belum di aktivasi, silakan hubungi Admin';
-				$data['title'] = $this->config->item('app_name');
+				$data['title'] = $this->session->userdata('title');
+				$data['trial'] = $this->session->userdata('trial');
 				$this->load->view('user/login', $data);
 			} else {
 				redirect('welcome');
@@ -58,7 +49,8 @@ class Login extends CI_Controller {
 		{
 			# view login form
 			$data['message']='';
-			$data['title'] = $this->config->item('app_name');
+			$data['title'] = $this->session->userdata('title');
+			$data['trial'] = $this->session->userdata('trial');
 			$this->load->view('user/login', $data);
 		}
 	}
@@ -77,7 +69,8 @@ class Login extends CI_Controller {
 			{
 				# login fail, show login form
 				$data['message']='User belum di aktivasi, silakan hubungi Admin';
-				$data['title'] = $this->config->item('app_name');
+				$data['title'] = $this->session->userdata('title');
+				$data['trial'] = $this->session->userdata('trial');
 				$this->load->view('user/login', $data);
 			} else {
 				redirect('welcome');
@@ -87,7 +80,8 @@ class Login extends CI_Controller {
 		{
 			# login fail, show login form
 			$data['message']='Masukan username dan password anda dengan benar.';
-			$data['title'] = $this->config->item('app_name');
+			$data['title'] = $this->session->userdata('title');
+			$data['trial'] = $this->session->userdata('trial');
 			$this->load->view('user/login', $data);
 		}
 		

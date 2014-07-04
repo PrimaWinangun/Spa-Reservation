@@ -29,7 +29,7 @@
 								'Cash' => 'Cash',
 								'Credit_Credit' => 'Credit Card',
 								'Debit_Credit' => 'Debit Card',
-								'Hutang' => 'Hutang',
+								'Hutang' => 'Receivable',
 								'FOC' => 'FOC',
 							);
 						echo form_dropdown('pay_type',$rc,''); ?>
@@ -42,6 +42,7 @@
 				'name' => 'start',
 				'id'   => 'datepicker',
 				'style'=> 'width:40%',
+				'value'=> date('d-m-Y', now())
 			);
 			echo form_input($dis); ?>
 			<div class="clear"></div>
@@ -53,6 +54,7 @@
 				'name' => 'end',
 				'id'   => 'datepicker2',
 				'style'=> 'width:40%',
+				'value'=> date('d-m-Y', now())
 			);
 			echo form_input($dis); ?>
 			<div class="clear"></div>

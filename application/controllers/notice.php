@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Notice extends CI_Controller {
+class Notice extends My_Reservation {
 
 	/**
 	 * The Banjar Bali
@@ -25,63 +25,56 @@ class Notice extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		
-		if ( ! $this->session->userdata('log_data'))
-    	{ 
-        	# function allowed for access without login
-			$allowed = array('');
-   		 }
 	} 
 	
 	public function not_authorized()
 	{
 		# Log Data
-		$user = $this->session->userdata('log_data');
+		$limit = array('all');
+		$user = $this->session_limit($limit, 0);
 		
 		# Page Data
 		$page['page_title'] = $this->session->userdata('title');
 		$page['modul'] = 'Error';
+		$page['sidebar'] = $this->sidebar_set($user['log_data']);
 		
-		if ($user['username'] == NULL)
+		if ($user['log_data']['username'] == NULL)
 		{
-			$user['username'] = 'guest';
+			$user['log_data']['username'] = 'guest';
 		}
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
-		$this->load->view('template/header', $page);
-		$this->load->view('template/sidebar');
-		$this->load->view('template/breadcumb');
-		$this->load->view('not_authorized');
-		$this->load->view('template/footer');
+		# view call
+		$this->view_call('not_authorized', $page, '');
 	}
 	
 	
 	public function not_found()
 	{
 		# Log Data
-		$user = $this->session->userdata('log_data');
+		$limit = array('all');
+		$user = $this->session_limit($limit, 0);
 		
 		# Page Data
 		$page['page_title'] = $this->session->userdata('title');
 		$page['modul'] = 'Error';
+		$page['sidebar'] = $this->sidebar_set($user['log_data']);
 		
-		if ($user != NULL) 
+		if ($user['log_data'] != NULL) 
 		{
-			if ($user['username'] == NULL)
+			if ($user['log_data']['username'] == NULL)
 			{
-				$user['username'] = 'guest';
+				$user['log_data']['username'] = 'guest';
 			}
 			
 			# Application Log
-			$this->app_log->record($user['username'], $this->uri->uri_string());
+			$this->app_record($user);
+		
+			# view call
+			$this->view_call('not_found', $page, '');
 			
-			$this->load->view('template/header', $page);
-			$this->load->view('template/sidebar');
-			$this->load->view('template/breadcumb');
-			$this->load->view('not_found');
-			$this->load->view('template/footer');
 		} else {
 			redirect('login');
 		}

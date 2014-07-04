@@ -81,6 +81,12 @@
 					if ($row_rm['room_hide_status'] == 'no'){
 						echo anchor('setting/admin/void_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/busy.png", 'alt'=>'Hide room', 'title'=>'Hide room'))); 
 						echo '&nbsp'.anchor('setting/admin/edit_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/config.png", 'alt'=>'Edit room', 'title'=>'Edit room')));
+						if ($row_rm['room_status'] == 'open')
+						{
+							echo '&nbsp'.anchor('setting/admin/close_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/brainstorming.png", 'alt'=>'Edit room', 'title'=>'Close room')));
+						} else {
+							echo '&nbsp'.anchor('setting/admin/open_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/sign-up.png", 'alt'=>'Edit room', 'title'=>'Open room')));
+						}
 					} else {
 						echo anchor('setting/admin/show_room/'.$row_rm['id'], img(array('src'=>"wp-content/themes/thebanjarbali/rsv/images/control/16/plus.png", 'alt'=>'Show room', 'title'=>'Show room')));
 					}

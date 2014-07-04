@@ -66,8 +66,6 @@
 
 $tx_idr = 0;
 $tx_usd = 0;
-$serv_idr = 0; 
-$serv_usd = 0;
 $sub_idr = 0; 
 $sub_usd = 0; 
 ?>
@@ -88,6 +86,7 @@ $sub_usd = 0;
 			?>
 			<input name="rate" id="rate" type="hidden" value="<?php echo $total_bayar; ?>" >
 			<input name="rate_dollar" id="rate_dollar" type="hidden" value="<?php echo $total_bayar_dollar; ?>" >
+			<input name="kurs" id="kurs" type="hidden" value="<?php echo $kurs->kurs_value; ?>" >
 			<tr>
 				<td width="30%"><label>Price Type</label></td><td>:</td>
 				<td align="right">
@@ -105,12 +104,11 @@ $sub_usd = 0;
 				<td><label>Payment Type </label></td><td>:</td>
 				<td align="right">
                     <div class="formRight">
-						<select id="pay_type" name="pay_type">  <!--Call run() function-->
+						<select id="pay_type" name="pay_type" onchange="javascript:showNote(this.value)">  <!--Call run() function-->
 							 <option value="Cash">Cash</option>
 							 <option value="Credit_Card">Credit Card</option>
 							 <option value="Debit_Card">Debit Card</option>
-							 <option value="Hutang">Hutang</option>     
-							 <option value="FOC">FOC</option>     
+							 <option value="Hutang">Receivable</option>       
 						</select>
 					</div>
 				</td>
@@ -121,8 +119,7 @@ $sub_usd = 0;
 							 <option value="-">-</option>
 							 <option value="Credit_Card">Credit Card</option>
 							 <option value="Debit_Card">Debit Card</option> 
-							 <option value="Hutang">Hutang</option>     
-							 <option value="FOC">FOC</option>     
+							 <option value="Hutang">Receivable</option>  
 						</select>
 				</td>
 			</tr>
@@ -150,6 +147,20 @@ $sub_usd = 0;
 						</div>
                 </td>
 			</tr>
+			
+			<tr class="cc_detail">
+				<td><label>Note</label></td><td>:</td>
+				<td align="right">
+                        <div class="formRight">
+						<?php 
+						$focnote = array(
+							'id' => 'foc_note',
+							'name' => 'foc_note',
+							'disabled' => 'disabled'
+						);
+						echo form_input($focnote);?></div>
+				</td>
+			<tr>
 			<tr>
 				<td></td><td></td>
 				<td align="right">
@@ -159,7 +170,7 @@ $sub_usd = 0;
 							'name' => 'dis_usd',
 							'id'   => 'dis_usd',
 							'style'=> 'width:48%',
-							'value'=> '0.00',
+							'value'=> '0.000',
 							'onchange' => 'javascript:hitungdiscount(this.value)'
 						);
 						echo form_input($disc_usd);?>
@@ -167,7 +178,7 @@ $sub_usd = 0;
                 </td>
 			</tr>
 			<tr>
-			<?php $tx_idr = $total_bayar * 10 / 100; $tx_usd = $total_bayar_dollar * 10 / 100; ?>
+			<?php $tx_idr = $total_bayar * 12.5 / 100; $tx_usd = $total_bayar_dollar * 12.5 / 100; ?>
 				<td><label>Tax </label><td>:</td>
 				<td align="right">
                         <div class="formRight">
@@ -176,7 +187,7 @@ $sub_usd = 0;
 							'name' => 'tax',
 							'id'   => 'tax',
 							'style'=> 'width:10%',
-							'value'=> 10,
+							'value'=> 12.5,
 							'onchange' => 'javascript:hitungtotal(this.value)'
 						);
 						echo form_input($tax); ?>&nbsp IDR
@@ -201,55 +212,10 @@ $sub_usd = 0;
 							'name' => 'tax_usd',
 							'id'   => 'tax_usd',
 							'style'=> 'width:48%',
-							'value'=> number_format($tx_usd, 2, '.',''),
+							'value'=> number_format($tx_usd, 3, '.',''),
 							'readonly' => 'readonly'
 						);
 						echo form_input($tax_usd);?>
-						</div>
-                </td>
-			</tr>
-			<?php 
-				$serv_idr = $total_bayar + $tx_idr; $serv_usd = $total_bayar_dollar + $tx_usd;
-				$sub_idr = $serv_idr * 2.5 / 100; $sub_usd = $serv_usd * 2.5 / 100; 
-			?>
-			<tr>
-				<td><label>Service </label><td>:</td>
-				<td align="right">
-                        <div class="formRight">
-						<?php 
-						$srv = array(
-							'name' => 'serv',
-							'id'   => 'serv',
-							'style'=> 'width:10%',
-							'value'=> 2.5,
-							'onchange' => 'javascript:hitungtotal(this.value)'
-						);
-						echo form_input($srv); ?>&nbsp IDR
-					<?php
-						$srv_idr = array(
-							'name' => 'serv_idr',
-							'id'   => 'serv_idr',
-							'style'=> 'width:48%',
-							'value'=> $sub_idr,
-							'readonly' => 'readonly'
-						);
-						echo form_input($srv_idr);?>
-						</div>
-                </td>
-			</tr>
-			<tr>
-				<td></td><td></td>
-				<td align="right">
-                        <div class="formRight">USD
-					<?php
-						$srv_usd = array(
-							'name' => 'serv_usd',
-							'id'   => 'serv_usd',
-							'style'=> 'width:48%',
-							'value'=> number_format($sub_usd, 2, '.',''),
-							'readonly' => 'readonly'
-						);
-						echo form_input($srv_usd);?>
 						</div>
                 </td>
 			</tr>
@@ -263,6 +229,7 @@ $sub_usd = 0;
 							'id'   => 'grand_idr',
 							'style'=> 'width:65%',
 							'value'=> $total_bayar + $tx_idr + $sub_idr,
+							'readonly'=> 'readonly'
 						);
 						echo form_input($jk);?></td>
 			</tr>
@@ -273,7 +240,8 @@ $sub_usd = 0;
 							'name' => 'grand_usd',
 							'id'   => 'grand_usd',
 							'style'=> 'width:65%',
-							'value'=> number_format(($total_bayar_dollar + $tx_usd + $sub_usd), 2, '.',''),
+							'value'=> number_format(($total_bayar_dollar + $tx_usd + $sub_usd), 3, '.',''),
+							'readonly'=> 'readonly'
 						);
 						echo form_input($jk);?>
 						</div>
@@ -304,6 +272,40 @@ $sub_usd = 0;
 							'value'=> '0',
 							'onchange' => 'javascript:hitungpayment_usd(this.value)',
 							'disabled' => 'disabled'
+						);
+						echo form_input($jk);?>
+						</div>
+                       </td>
+			</tr>
+			<tr>
+				<td><font color="#FF0000">Kurs Hari Ini</font></td><td>:</td>
+				<td align="right">
+				<strong><font color="#FF0000"><?php echo number_format($kurs->kurs_value, 2, ',', '.')?></font></strong>
+                </td>
+			</tr>
+			<tr>
+				<td rowspan="2"><label>Payment Fisik</label></td><td>:</td>
+				<td align="right">
+                        <div class="formRight">IDR &nbsp
+						<?php 
+						$jk = array(
+							'name' => 'fis_idr',
+							'id'   => 'fis_idr',
+							'style'=> 'width:65%',
+							'value'=> '0',
+							'onchange' => 'javascript:hitungfisik_idr(this.value)',
+						);
+						echo form_input($jk);?></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td align="right">USD &nbsp<?php
+						$jk = array(
+							'name' => 'fis_usd',
+							'id'   => 'fis_usd',
+							'style'=> 'width:65%',
+							'value'=> '0',
+							'onchange' => 'javascript:hitungfisik_usd(this.value)',
 						);
 						echo form_input($jk);?>
 						</div>

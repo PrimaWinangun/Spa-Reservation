@@ -2,28 +2,6 @@
 
 class Register extends CI_Controller {
 
-	/**
-	 * PT Gapura Angkasa
-	 * Warehouse Management System.
-	 * ver 3.0
-	 * 
-	 * App id : 
-	 * App code : wmsdps
-	 *
-	 * login controller
-	 *
-	 * url : http://dom.wms.dps.gapura.co.id/
-	 * design : SIGAP Team
-	 * project head : mantara@gapura.co.id
-	 *
-	 * developer : panca dharma wisesa (pandhawa digital)
-	 * phone : 0361 853 2400
-	 * email : pandhawa.digital@gmail.com
-	 *
-	 * copyright by panca dharma wisesa (pandhawa digital)
-	 * Do not copy, modified, share or sell this script 
-	 * without any permission from developer
-	 */
 	public function index()
 	{
 		if ($this->url_app->available())
@@ -36,15 +14,24 @@ class Register extends CI_Controller {
 	
 	public function save_app()
 	{
-		
-		$this->url_app->lock_app($this->input->post('title'));
-		
-		redirect('register/set_developer');
+		if(!$this->url_app->check())
+		{
+			$this->url_app->lock_app($this->input->post('title'));
+			$this->url_app->create_verification();
+			redirect('register/set_developer');
+		} else {
+			redirect('register/set_developer');
+		}
 	}
 	
 	public function set_developer()
 	{
-		$this->load->view('developer');
+		if ($this->login_case->developer() <1 )
+		{
+			$this->load->view('developer');
+		} else {
+			redirect('register/upload_verification');
+		}
 	}
 	
 	public function save_developer()
@@ -101,9 +88,46 @@ class Register extends CI_Controller {
 				$this->login_case->register_user($data);
 			}
 			
-			redirect('login');
+			redirect('upload_verification');
 		} else {
 			echo 'failed';
+		}
+	}
+	
+	public function upload_verification()
+	{
+		$this->load->view('upload');
+	}
+	
+	public function do_upload_verification()
+	{
+		$config['upload_path'] = './assets/uploads/';
+		$config['allowed_types'] = 'txt|text';
+		$config['max_size']	= '100';
+		$config['file_name'] = 'verification';
+
+		$this->load->library('upload', $config);
+
+		if ( ! $this->upload->do_upload())
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			print_r($error);
+		}
+		else
+		{
+			$data = array('upload_data' => $this->upload->data());
+
+			$this->url_app->upload_verification();
+			
+			$message = $this->url_app->check_verification();
+			
+			if ($message == 'verification failed')
+			{
+				echo $message;
+			} else {
+				redirect('login');
+			}
 		}
 	}
 	

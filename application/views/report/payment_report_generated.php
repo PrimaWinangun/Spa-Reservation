@@ -20,8 +20,9 @@
 	<table cellpadding="0" cellspacing="0" width="100%" class="table table-bordered">
 		<thead>
 			<tr>
-				<th rowspan="2">No</th>
-				<th rowspan="2">Payment Code</th>
+				<th rowspan="2" style="vertical-align:middle">No</th>
+				<th rowspan="2" style="vertical-align:middle">Payment Code</th>
+				<th rowspan="2" style="vertical-align:middle">Rate</th>
 				<th colspan="2">Compliment / FOC</th>
 				<th colspan="2">Cash</th>
 				<th colspan="2">Credit Card</th>
@@ -83,20 +84,21 @@
 			{ $dcard_idr = $row_pay->rb_paid_idr;
 			  $dcard_usd = $row_pay->rb_paid_usd; } else
 			if ($row_pay->rb_payment_type == 'FOC')
-			{ $foc_idr = $row_pay->rb_paid_idr;
-			  $foc_usd = $row_pay->rb_paid_usd; }
-			if ($row_pay->rb_payment_type_2 == 'Cash')
-			{ $cash_idr = $row_pay->rb_paid_idr_2;   
-			  $cash_usd = $row_pay->rb_paid_usd_2; } else 
+			{ $foc_idr = $row_pay->rb_total_rp;
+			  $foc_usd = $row_pay->rb_total; } else
+			if ($row_pay->rb_payment_type == 'Hutang')
+			{ $ar_idr = $row_pay->rb_paid_idr;
+			  $ar_usd = $row_pay->rb_paid_usd; }
+			  
 			if ($row_pay->rb_payment_type_2 == 'Credit_Card')
 			{ $ccard_idr = $row_pay->rb_paid_idr_2;
 			  $ccard_usd = $row_pay->rb_paid_usd_2; } else 
 			if ($row_pay->rb_payment_type_2 == 'Debit_Card')
 			{ $dcard_idr = $row_pay->rb_paid_idr_2;
 			  $dcard_usd = $row_pay->rb_paid_usd_2; } else
-			if ($row_pay->rb_payment_type_2 == 'FOC')
-			{ $foc_idr = $row_pay->rb_paid_idr_2;
-			  $foc_usd = $row_pay->rb_paid_usd_2; }
+			if ($row_pay->rb_payment_type_2 == 'Hutang')
+			{ $ar_idr = $row_pay->rb_paid_idr_2;
+			  $ar_usd = $row_pay->rb_paid_usd_2; } 
 			  
 			$tot_cash_idr = $tot_cash_idr + $cash_idr;
 			$tot_cash_usd = $tot_cash_usd + $cash_usd;
@@ -116,36 +118,37 @@
 			<tr>
 				<td align="center"><?php echo $num++;?></td>
 				<td><?php echo $row_pay->rb_pay_code;?></td>
+				<td><?php echo number_format($row_pay->rb_rate, 0, ',', '.');?></td>
 				<td align="right"><?php echo number_format($foc_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($foc_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($foc_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($cash_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($cash_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($cash_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($ccard_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($ccard_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($ccard_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($dcard_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($dcard_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($dcard_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($ar_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($ar_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($ar_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format(($row_pay->rb_paid_idr + $row_pay->rb_paid_idr_2), 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format(($row_pay->rb_paid_usd + $row_pay->rb_paid_usd_2), 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format(($row_pay->rb_paid_usd + $row_pay->rb_paid_usd_2), 3, ',', '.');?></td>
 			</tr>
 		<?php } }?>
         </tbody>
 		<tfoot>
 			<tr>
-				<td align="right" colspan="2">TOTAL</td>
+				<td align="right" colspan="3">TOTAL</td>
 				<td align="right"><?php echo number_format($tot_foc_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($tot_foc_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($tot_foc_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($tot_cash_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($tot_cash_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($tot_cash_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($tot_ccard_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($tot_ccard_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($tot_ccard_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($tot_dcard_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($tot_dcard_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($tot_dcard_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($tot_ar_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($tot_ar_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($tot_ar_usd, 3, ',', '.');?></td>
 				<td align="right"><?php echo number_format($tot_idr, 2, ',', '.');?></td>
-				<td align="right"><?php echo number_format($tot_usd, 2, ',', '.');?></td>
+				<td align="right"><?php echo number_format($tot_usd, 3, ',', '.');?></td>
 			</tr>
 		</tfoot>
     </table>

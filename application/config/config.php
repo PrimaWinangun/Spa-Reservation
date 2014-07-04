@@ -66,7 +66,7 @@ $config['uri_protocol']	= 'AUTO';
 | http://codeigniter.com/user_guide/general/urls.html
 */
 
-$config['url_suffix'] = '';
+$config['url_suffix'] = '.sparrow';
 
 /*
 |--------------------------------------------------------------------------
@@ -254,7 +254,7 @@ $config['encryption_key'] = '270062013';
 |
 */
 $config['sess_cookie_name']		= 'ci_session';
-$config['sess_expiration']		= 7200;
+$config['sess_expiration']		= 1800;
 $config['sess_expire_on_close']	= FALSE;
 $config['sess_encrypt_cookie']	= FALSE;
 $config['sess_use_database']	= FALSE;
@@ -366,6 +366,18 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-
+/*
+|--------------------------------------------------------------------------
+| Autoload Custom Controllers
+|--------------------------------------------------------------------------
+|
+*/
+function __autoload($class) {
+    if (substr($class,0,3) !== 'CI_') {
+        if (file_exists($file = APPPATH . 'core/' . $class . EXT)) {
+            include $file;
+        }
+    }
+}
 /* End of file config.php */
 /* Location: ./application/config/config.php */

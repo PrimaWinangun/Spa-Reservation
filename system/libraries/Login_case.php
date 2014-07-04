@@ -51,6 +51,52 @@ class Login_case {
 		}
 	}
 	
+	public function sidebar_modul($modul)
+	{
+		$CI =& get_instance();
+		$CI->load->database();
+		$CI->load->helper('array');
+		$CI->load->helper('url');
+		
+		if ($modul['authority'] > 2)
+		{
+			$search = "";
+		} else {
+			$search = $modul['position'];
+		}
+		$CI->db->select('modul');
+		$CI->db->like('position', $search);
+		$CI->db->order_by('id_sidebar');
+		$CI->db->group_by('modul');
+		$sidebar = $CI->db->get('app_sidebar');
+		
+		return $sidebar->result();
+	}
+	
+	public function sidebar_data($search, $user)
+	{
+		$CI =& get_instance();
+		$CI->load->database();
+		$CI->load->helper('array');
+		$CI->load->helper('url');
+		
+		if ($user['authority'] > 2)
+		{
+			$position = "";
+		} else {
+			$position = $user['position'];
+		}
+		
+		$CI->db->select('sub_modul, sidebar');
+		$CI->db->like('modul', $search);
+		$CI->db->like('position', $position);
+		$CI->db->order_by('modul');
+		$CI->db->group_by('sub_modul');
+		$sidebar = $CI->db->get('app_sidebar');
+		
+		return $sidebar->result();
+	}
+	
 	public function register_user($data)
 	{
 		$CI =& get_instance();

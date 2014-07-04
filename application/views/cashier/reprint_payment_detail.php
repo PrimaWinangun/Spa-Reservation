@@ -137,7 +137,7 @@
                 </td>
 			</tr>
 			<tr>
-			<?php $tx_idr = $total_bayar * 10 / 100; $tx_usd = $total_bayar_dollar * 10 / 100; ?>
+			<?php $tx_idr = $total_bayar * 12.5 / 100; $tx_usd = $total_bayar_dollar * 12.5 / 100; ?>
 				<td><label>Tax </label><td>:</td>
 				<td align="right">
                         <div class="formRight">
@@ -163,43 +163,10 @@
 							'name' => 'tax_usd',
 							'id'   => 'tax_usd',
 							'style'=> 'width:48%',
-							'value'=> number_format($pay_detail->rb_tax, 2, '.',''),
+							'value'=> number_format($pay_detail->rb_tax, 3, '.',''),
 							'readonly' => 'readonly'
 						);
 						echo form_input($tax_usd);?>
-						</div>
-                </td>
-			</tr>
-			<tr>
-				<td><label>Service </label><td>:</td>
-				<td align="right">
-                        <div class="formRight">
-						&nbsp IDR
-					<?php
-						$srv_idr = array(
-							'name' => 'serv_idr',
-							'id'   => 'serv_idr',
-							'style'=> 'width:48%',
-							'value'=> $pay_detail->rb_service_rp,
-							'readonly' => 'readonly'
-						);
-						echo form_input($srv_idr);?>
-						</div>
-                </td>
-			</tr>
-			<tr>
-				<td></td><td></td>
-				<td align="right">
-                        <div class="formRight">USD
-					<?php
-						$srv_usd = array(
-							'name' => 'serv_usd',
-							'id'   => 'serv_usd',
-							'style'=> 'width:48%',
-							'value'=> number_format($pay_detail->rb_service, 2, '.',''),
-							'readonly' => 'readonly'
-						);
-						echo form_input($srv_usd);?>
 						</div>
                 </td>
 			</tr>

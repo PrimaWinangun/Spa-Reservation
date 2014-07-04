@@ -5,7 +5,6 @@ function hitungtotal()
 	var rate_dollar =document.getElementById("rate_dollar");
 	var ppn = document.getElementById("tax");
 	var dis = document.getElementById("dis");
-	var srv = document.getElementById("serv");
 	
 	var dis_idr = Number(dis.value)*Number(rate.value)/100;
 	var dis_usd = Number(dis.value)*Number(rate_dollar.value)/100;
@@ -19,24 +18,19 @@ function hitungtotal()
 	var sub_idr = total_idr + tax_idr;
 	var sub_usd = total_usd + tax_usd;
 	
-	var ser_idr = sub_idr*Number(srv.value)/100;
-	var ser_usd = sub_usd*Number(srv.value)/100;
-	
-	var final_idr = total_idr + ser_idr;
-	var final_usd = total_usd + ser_usd;
+	var final_idr = total_idr;
+	var final_usd = total_usd;
 	
 	var pay_type = '';
 	var discount = 0;
 	
 
 	document.getElementById("dis_idr").value = dis_idr;
-	document.getElementById("dis_usd").value = dis_usd.toFixed(2);
+	document.getElementById("dis_usd").value = dis_usd.toFixed(3);
 	document.getElementById("tax_idr").value = tax_idr;
-	document.getElementById("tax_usd").value = tax_usd.toFixed(2);
-	document.getElementById("serv_idr").value = ser_idr;
-	document.getElementById("serv_usd").value = ser_usd.toFixed(2);
+	document.getElementById("tax_usd").value = tax_usd.toFixed(3);
 	document.getElementById("grand_idr").value = final_idr;
-	document.getElementById("grand_usd").value = final_usd.toFixed(2);
+	document.getElementById("grand_usd").value = final_usd.toFixed(3);
 	document.getElementById("grand_idr_2").value = 0;
 	document.getElementById("grand_usd_2").value = 0;
 }
@@ -46,14 +40,34 @@ function hitungPaymentType()
 	var rate = document.getElementById("rate");
 	var rate_dollar =document.getElementById("rate_dollar");
 	var ppn = document.getElementById("tax");
-	var srv = document.getElementById("serv");
 	var pay_type = document.getElementById("promo").value;
+	var type = document.getElementById("pay_type").value;
 	var discount = 0;
 	
 	<?php foreach ($payment_type as $pay_row){ 
 		echo 'if ( pay_type == "'.$pay_row->pay_payment_type.'") { discount = '.$pay_row->pay_discount.'}';
 	} ?>
 	
+	if ( pay_type == 'FOC')
+		{
+			$("#pay_type_2").attr("disabled", "disabled"); 
+		} else {
+			$("#pay_type_2").removeAttr("disabled"); 
+		}
+		
+	if ( pay_type == 'FOC')
+		{
+			$('.cc_detail').show();
+			$("#foc_note").removeAttr("disabled"); 
+			$("#fis_idr").attr("disabled", "disabled"); 
+			$("#fis_usd").attr("disabled", "disabled"); 
+			document.getElementById("pay_type").value = 'FOC';
+		} else {
+			$('.cc_detail').hide();
+			$("#foc_note").attr("disabled", "disabled"); 
+			document.getElementById("pay_type").value = 'Cash';
+		}
+		
 	var dis_idr = Number(rate.value)*discount/100;
 	var dis_usd = Number(rate_dollar.value)*discount/100;
 	
@@ -66,21 +80,16 @@ function hitungPaymentType()
 	var sub_idr = total_idr + tax_idr;
 	var sub_usd = total_usd + tax_usd;
 	
-	var srv_idr = Number(srv.value)*sub_idr/100;
-	var srv_usd = Number(srv.value)*sub_usd/100; 
-	
-	var final_idr = total_idr + tax_idr + srv_idr;
-	var final_usd = total_usd + tax_usd + srv_usd;
+	var final_idr = total_idr + tax_idr;
+	var final_usd = total_usd + tax_usd;
 
 	document.getElementById("tax_idr").value = tax_idr;
-	document.getElementById("tax_usd").value = tax_usd.toFixed(2);
-	document.getElementById("serv_idr").value = srv_idr;
-	document.getElementById("serv_usd").value = srv_usd.toFixed(2);
+	document.getElementById("tax_usd").value = tax_usd.toFixed(3);
 	document.getElementById("dis").value = discount;
 	document.getElementById("dis_idr").value = dis_idr;
-	document.getElementById("dis_usd").value = dis_usd.toFixed(2);
+	document.getElementById("dis_usd").value = dis_usd.toFixed(3);
 	document.getElementById("grand_idr").value = final_idr;
-	document.getElementById("grand_usd").value = final_usd.toFixed(2);
+	document.getElementById("grand_usd").value = final_usd.toFixed(3);
 	document.getElementById("grand_idr_2").value = 0;
 	document.getElementById("grand_usd_2").value = 0;
 }
@@ -90,7 +99,6 @@ function hitungdiscount()
 	var rate = document.getElementById("rate");
 	var rate_dollar =document.getElementById("rate_dollar");
 	var ppn = document.getElementById("tax");
-	var srv = document.getElementById("serv");
 	var disc_idr = document.getElementById("dis_idr");
 	var disc_usd = document.getElementById("dis_usd");
 
@@ -102,44 +110,14 @@ function hitungdiscount()
 
 	var sub_idr = total_idr + tax_idr;
 	var sub_usd = total_usd + tax_usd;
-	
-	var srv_idr = Number(srv.value)*sub_idr/100;
-	var srv_usd = Number(srv.value)*sub_usd/100; 
-	
-	var final_idr = total_idr + tax_idr + srv_idr;
-	var final_usd = total_usd + tax_usd + srv_usd;
-
-	document.getElementById("tax_idr").value = tax_idr;
-	document.getElementById("tax_usd").value = tax_usd.toFixed(2);
-	document.getElementById("serv_idr").value = srv_idr;
-	document.getElementById("serv_usd").value = srv_usd.toFixed(2);
-	document.getElementById("grand_idr").value = final_idr;
-	document.getElementById("grand_usd").value = final_usd.toFixed(2);
-	document.getElementById("grand_idr_2").value = 0;
-	document.getElementById("grand_usd_2").value = 0;
-}
-
-function hitungService()
-{
-	var rate = document.getElementById("rate");
-	var rate_dollar =document.getElementById("rate_dollar");
-	var ppn = document.getElementById("tax");
-	var disc_idr = document.getElementById("dis_idr");
-	var disc_usd = document.getElementById("dis_usd");
-
-	var total_idr = Number(rate.value) - Number(disc_idr.value);
-	var total_usd = Number(rate_dollar.value) - Number(disc_usd.value); 
-
-	var tax_idr = Number(ppn.value)*total_idr/100;
-	var tax_usd = Number(ppn.value)*total_usd/100;
-
+		
 	var final_idr = total_idr + tax_idr;
 	var final_usd = total_usd + tax_usd;
 
 	document.getElementById("tax_idr").value = tax_idr;
-	document.getElementById("tax_usd").value = tax_usd.toFixed(2);
+	document.getElementById("tax_usd").value = tax_usd.toFixed(3);
 	document.getElementById("grand_idr").value = final_idr;
-	document.getElementById("grand_usd").value = final_usd.toFixed(2);
+	document.getElementById("grand_usd").value = final_usd.toFixed(3);
 	document.getElementById("grand_idr_2").value = 0;
 	document.getElementById("grand_usd_2").value = 0;
 }
@@ -179,7 +157,7 @@ function hitungpayment_usd()
 	
 	if (Number(payment_usd_2.value) == 0)
 	{
-		document.getElementById("grand_usd").value = (Number(rate.value)+tax).toFixed(2);
+		document.getElementById("grand_usd").value = (Number(rate.value)+tax).toFixed(3);
 	} else {
 		if ((Number(payment_usd_2.value) > Number(payment_usd_1.value)))
 		{
@@ -189,7 +167,7 @@ function hitungpayment_usd()
 		} else {
 			var grand_usd_1 = Number(payment_usd_1.value) - Number(payment_usd_2.value); 
 
-			document.getElementById("grand_usd").value = grand_usd_1.toFixed(2);
+			document.getElementById("grand_usd").value = grand_usd_1.toFixed(3);
 		}
 	}
 }
@@ -209,11 +187,81 @@ function disabledEnabled()
 		$("#grand_idr_2").removeAttr("disabled"); 
 		$("#grand_usd_2").removeAttr("disabled"); 
 	} else {
-		document.getElementById("grand_usd").value = (Number(rate_usd.value)+tax_usd).toFixed(2);
+		document.getElementById("grand_usd").value = (Number(rate_usd.value)+tax_usd).toFixed(3);
 		document.getElementById("grand_usd_2").value = 0;
 		document.getElementById("grand_idr").value = Number(rate_idr.value)+tax_idr;
 		document.getElementById("grand_idr_2").value = 0;
+		$("#grand_idr_2").attr("disabled", "disabled"); 
+		$("#grand_usd_2").attr("disabled", "disabled"); 
 	}
+}
+
+function showNote()
+{
+	var pay_type = document.getElementById("pay_type").value;
+	
+	if ( pay_type == 'FOC')
+		{
+			$('.cc_detail').show();
+			$("#foc_note").removeAttr("disabled"); 
+		} else {
+			$('.cc_detail').hide();
+			$("#foc_note").attr("disabled", "disabled"); 
+		}
+		
+	if ( pay_type == 'Cash')
+		{
+			$("#fis_idr").removeAttr("disabled"); 
+			$("#fis_usd").removeAttr("disabled"); 
+		} else {
+			$("#fis_idr").attr("disabled", "disabled"); 
+			$("#fis_usd").attr("disabled", "disabled"); 
+		}
+
+}
+
+function hitungfisik_idr()
+{
+	var grand_usd = document.getElementById("grand_usd");
+	var grand_idr = document.getElementById("grand_idr");
+	var fis_idr = document.getElementById("fis_idr");
+	var kurs = document.getElementById("kurs");
+	
+	var sisa_idr = Number(fis_idr.value) - Number(grand_idr.value);
+	var idr_to_usd = sisa_idr/Number(kurs.value);
+	var sisa_usd = Number(grand_usd.value) - idr_to_usd;
+	
+	if( sisa_usd < 0)
+	{
+		alert('overlimit');
+		document.getElementById("fis_idr").value = 0;
+		document.getElementById("fis_usd").value = 0;
+	} else {
+		document.getElementById("fis_usd").value = sisa_usd.toFixed(3);
+	}
+	
+}
+
+function hitungfisik_usd()
+{
+	var grand_usd = document.getElementById("grand_usd");
+	var grand_idr = document.getElementById("grand_idr");
+	var fis_usd = document.getElementById("fis_usd");
+	var kurs = document.getElementById("kurs");
+	
+	var sisa_usd = Number(grand_usd.value) - Number(fis_usd.value);
+	var usd_to_idr = sisa_usd*Number(kurs.value);
+	var total = Number(grand_idr.value) + usd_to_idr;
+	
+	if( sisa_usd < 0)
+	{
+		alert('overlimit');
+		document.getElementById("fis_idr").value = 0;
+		document.getElementById("fis_usd").value = 0;
+	} else {
+		document.getElementById("fis_idr").value = total.toFixed(2);
+	}
+	
 }
 
 

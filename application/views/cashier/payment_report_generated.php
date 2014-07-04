@@ -88,8 +88,8 @@
 			{ $ar_idr = $row_pay->rb_paid_idr;
 			  $ar_usd = $row_pay->rb_paid_usd; } else 
 			if ($row_pay->rb_payment_type == 'FOC')
-			{ $foc_idr = $row_pay->rb_paid_idr;
-			  $foc_usd = $row_pay->rb_paid_usd; }
+			{ $foc_idr = $row_pay->rb_total_rp;
+			  $foc_usd = $row_pay->rb_total; }
 			  
 			if ($row_pay->rb_payment_type_2 == 'Cash')
 			{ $cash_idr = $row_pay->rb_paid_idr_2;   
@@ -104,8 +104,8 @@
 			{ $ar_idr = $row_pay->rb_paid_idr_2;
 			  $ar_usd = $row_pay->rb_paid_usd_2; } else
 			if ($row_pay->rb_payment_type_2 == 'FOC')
-			{ $foc_idr = $row_pay->rb_paid_idr_2;
-			  $foc_usd = $row_pay->rb_paid_usd_2; }
+			{ $foc_idr = $row_pay->rb_total_rp;
+			  $foc_usd = $row_pay->rb_total; }
 			  
 			$tot_cash_idr = $tot_cash_idr + $cash_idr;
 			$tot_cash_usd = $tot_cash_usd + $cash_usd;

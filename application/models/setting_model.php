@@ -25,6 +25,12 @@ class Setting_model extends CI_Model {
 	 * without any permission from developer
 	 */
 	 
+	 ## Kurs ##
+	 public function insert_kurs($data)
+	 {
+		$this->db->insert('tbb_kurs', $data); 
+	 }
+	 
 	 ## Room Category ##
 	 public function insert_room_cat($data)
 	 {
@@ -195,6 +201,18 @@ class Setting_model extends CI_Model {
 	 {
 		$this->db->where('id', $id);
 		$this->db->update('tbb_room', array('room_hide_status'=> 'yes'));
+	 }
+	 
+	 public function close_room($id)
+	 {
+		$this->db->where('id', $id);
+		$this->db->update('tbb_room', array('room_status'=> 'close'));
+	 }
+	 
+	 public function open_room($id)
+	 {
+		$this->db->where('id', $id);
+		$this->db->update('tbb_room', array('room_status'=> 'open'));
 	 }
 	 
 	 public function show_room($id)

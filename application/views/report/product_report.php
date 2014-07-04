@@ -28,6 +28,7 @@
 				'name' => 'start',
 				'id'   => 'datepicker',
 				'style'=> 'width:40%',
+				'value'=> date('d-m-Y', now())
 			);
 			echo form_input($dis); ?>
 			<div class="clear"></div>
@@ -39,6 +40,7 @@
 				'name' => 'end',
 				'id'   => 'datepicker2',
 				'style'=> 'width:40%',
+				'value'=> date('d-m-Y', now())
 			);
 			echo form_input($dis); ?>
 			<div class="clear"></div>

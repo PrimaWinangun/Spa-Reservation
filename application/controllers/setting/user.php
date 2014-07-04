@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class User extends CI_Controller {
+class User extends My_Reservation {
 
 	/**
 	 * The Banjar Bali
@@ -25,16 +25,6 @@ class User extends CI_Controller {
 	function __construct()
 	{
         parent::__construct();
-		
-		if (! $this->url_app->check())
-		{
-			if ($this->url_app->available())
-			{
-				redirect('register');
-			} else {
-				redirect('invalid');
-			}
-		}
 	} 
 	
 	public function index()
@@ -48,31 +38,24 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 1))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 1);
 		
 		# Page Data
 		$page['page_title'] = $this->session->userdata('title');
 		$page['modul'] = 'setting';
-		$page['sidebar_list_user'] = 'on';
+		$page['sidebar_list_user'] = 'on'; 
+		$page['sidebar'] = $this->sidebar_set($user['log_data']);
 		
 		# Form Data
-		$data['auth'] = $user['authority'];
+		$data['auth'] = $user['log_data']['authority'];
 		$data['list_user'] = $this->user_model->get_list_user();
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
-		$this->load->view('template/header', $page);
-		$this->load->view('template/sidebar');
-		$this->load->view('template/breadcumb');
-		$this->load->view('user/register', $data);
-		$this->load->view('template/footer');
+		# View Call
+		$this->view_call('user/register', $page, $data);
 	}
 	
 	public function update()
@@ -81,31 +64,23 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 1))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 1);
 		
 		# Page Data
 		$page['page_title'] = $this->session->userdata('title');
 		$page['modul'] = 'setting';
-		$page['sidebar_list_user'] = 'on';
+		$page['sidebar_list_user'] = 'on'; 
+		$page['sidebar'] = $this->sidebar_set($user['log_data']);
 		
 		# Form Data
-		$data['auth'] = $user['authority'];
+		$data['auth'] = $user['log_data']['authority'];
 		$data['datauser'] = $this->user_model->get_user_detail($this->uri->segment(4));
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
-		$this->load->view('template/header', $page);
-		$this->load->view('template/sidebar');
-		$this->load->view('template/breadcumb');
-		$this->load->view('user/update', $data);
-		$this->load->view('template/footer');
+		$this->view_call('user/update', $page, $data);
 	}
 	
 	public function update_user()
@@ -115,13 +90,8 @@ class User extends CI_Controller {
 		$this->load->library('encrypt');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 1))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 1);
 		
 		$id_user = $this->input->post('id_user');
 		
@@ -152,7 +122,7 @@ class User extends CI_Controller {
 		$this->login_case->update_user($id_user, $data);
 			
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
 		# Redirect
 		redirect('setting/user/register');
@@ -165,13 +135,8 @@ class User extends CI_Controller {
 		$this->load->library('encrypt');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 1))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 1);
 		
 		# Form Validation
 		$config = array(
@@ -219,7 +184,7 @@ class User extends CI_Controller {
 			$this->login_case->register_user($data);
 			
 			# Application Log
-			$this->app_log->record($user['username'], $this->uri->uri_string());
+			$this->app_record($user);
 			
 			# Redirect
 			redirect('setting/user/register');
@@ -234,13 +199,8 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 3))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 3);
 		
 		$id_user = $this->uri->segment(4);
 		
@@ -250,11 +210,11 @@ class User extends CI_Controller {
 		{
 			redirect('notice/not_authorized');
 		} else {
-			$this->user_model->set_approve_user($id_user, $user['username']);
+			$this->user_model->set_approve_user($id_user, $user['log_data']['username']);
 		}
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
 		redirect('setting/user/register');
 	}
@@ -265,13 +225,8 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 3))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 3);
 		
 		$id_user = $this->uri->segment(4);
 		
@@ -281,11 +236,11 @@ class User extends CI_Controller {
 		{
 			redirect('notice/not_authorized');
 		} else {
-			$this->user_model->set_suspend_user($id_user, $user['username']);
+			$this->user_model->set_suspend_user($id_user, $user['log_data']['username']);
 		}
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
 		redirect('setting/user/register');
 	}
@@ -296,19 +251,14 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 4))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 4);
 		
 		$id_user = $this->uri->segment(4);
-		$this->user_model->set_approve_user($id_user, $user['username']);
+		$this->user_model->set_approve_user($id_user, $user['log_data']['username']);
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
 		redirect('setting/user/register');
 	}
@@ -319,19 +269,14 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		
 		# Log Data
-		$user = $this->session->userdata('log_data');
-		
-		# Authentication Limit
-		if (!$this->url_app->auth_limit($user, 'setting', 4))
-		{
-			redirect('notice/not_authorized');
-		}
+		$limit = array('setting');
+		$user = $this->session_limit($limit, 4);
 		
 		$id_user = $this->uri->segment(4);
-		$this->user_model->set_suspend_user($id_user, $user['username']);
+		$this->user_model->set_suspend_user($id_user, $user['log_data']['username']);
 		
 		# Application Log
-		$this->app_log->record($user['username'], $this->uri->uri_string());
+		$this->app_record($user);
 		
 		redirect('setting/user/register');
 	}

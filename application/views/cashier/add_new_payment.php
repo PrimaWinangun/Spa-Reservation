@@ -65,7 +65,8 @@
 				<td <?php echo $color; ?>><center><?php 
 					if ($row_res->res_status != 'paid')
 					{
-						echo anchor('cashier/payment/pay_reservation/'.$row_res->res_code.'/'.$this->uri->segment(4)/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'Pay'); 
+						echo anchor('cashier/payment/pay_reservation/'.$row_res->res_code.'/'.$this->uri->segment(4)/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'Pay'); echo ' | ';
+						echo anchor('cashier/payment/instant_pay_reservation/'.$row_res->res_code.'/'.$this->uri->segment(4)/*, img(array('src'=>"wp-theme/images/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))*/,'Instant Pay'); 
 					} else 
 					if ($row_res->res_status == 'paid')
 					{
